@@ -4,7 +4,7 @@ const getBaseURL = () => {
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
-  return import.meta.env.DEV ? 'http://localhost:8080/api/v1' : '/api/v1';
+  return import.meta.env.DEV ? 'http://localhost:8080/api/v1' : 'https://api.neosowinfra.com/api/v1';
 };
 
 const API = axios.create({
