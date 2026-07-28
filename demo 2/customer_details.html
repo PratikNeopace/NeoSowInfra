@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details - User Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container-card {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            width: 100%;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .file-upload-wrapper {
+            border: 2px dashed #dee2e6;
+            padding: 20px;
+            text-align: center;
+            border-radius: 6px;
+            background: #f8f9fa;
+            cursor: pointer;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: #667eea;
+            background: #f0f2ff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container container-card">
+        <h2 class="section-title"><i class="fas fa-user-edit"></i> Customer & Project Details</h2>
+
+        <form id="detailsForm">
+            <!-- Personal Information -->
+            <h5 class="mb-3 text-secondary">Personal Information</h5>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" class="form-control" id="custName" required>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Phone Number *</label>
+                    <input type="tel" class="form-control" id="custPhone" required>
+                </div>
+                <div class="col-12">
+                    <label class="form-label">Address</label>
+                    <textarea class="form-control" id="custAddress" rows="2"></textarea>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Birth Date</label>
+                    <input type="date" class="form-control" id="birthDate">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Anniversary Date</label>
+                    <input type="date" class="form-control" id="anniversaryDate">
+                </div>
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0">Family Members & Approval Authorities</label>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addFamilyRow()">
+                            <i class="fas fa-plus"></i> Add Member
+                        </button>
+                    </div>
+                    <div class="table-responsive border rounded bg-light p-2">
+                        <table class="table table-sm table-borderless mb-0">
+                            <thead>
+                                <tr style="font-size: 12px; border-bottom: 1px solid #dee2e6;">
+                                    <th>Type</th>
+                                    <th>Name</th>
+                                    <th>Contact</th>
+                                    <th>Email</th>
+                                    <th style="width: 120px;">Birthdate</th>
+                                    <th class="text-center" style="width: 70px;">Design Appr.</th>
+                                    <th class="text-center" style="width: 70px;">Finance Appr.</th>
+                                    <th style="width: 40px;"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="familyTableBody">
+                                <!-- Family rows injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Details -->
+            <h5 class="mb-3 text-secondary mt-5">Project Details</h5>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Type of Work *</label>
+                    <select class="form-select" id="workType" required onchange="handleWorkTypeChange(this)">
+                        <option value="">Choose Category...</option>
+                        <optgroup label="Residency">
+                            <option value="Duplex">Duplex</option>
+                            <option value="Row house">Row house</option>
+                            <option value="Farm house">Farm house</option>
+                            <option value="Residency-Others">Others (Residency)</option>
+                        </optgroup>
+                        <optgroup label="Commercial">
+                            <option value="Hospital">Hospital</option>
+                            <option value="Educational Institute">Educational Institute</option>
+                            <option value="Commercial-Others">Others (Commercial)</option>
+                        </optgroup>
+                        <option value="others">Other (Specify)</option>
+                    </select>
+                    <input type="text" class="form-control mt-2" id="customWorkType" style="display:none;"
+                        placeholder="Specify Work Type">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label">Carpet Area</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="carpetArea" placeholder="Area">
+                        <select class="form-select" id="areaUnit" style="max-width: 100px;">
+                            <option value="SQFT">SQ.FT</option>
+                            <option value="SQMT">SQ.MT</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Built-up Area</label>
+                    <input type="number" class="form-control" id="builtUpArea">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Client Budget (Optional)</label>
+                    <input type="number" class="form-control" id="clientBudget" placeholder="₹">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Expected Timeline</label>
+                    <input type="text" class="form-control" id="timeline" placeholder="e.g., 3 months, Dec 2026">
+                </div>
+
+                <div class="col-12 mt-4">
+                    <label class="form-label">Upload Drawing / Plan</label>
+                    <div class="file-upload-wrapper" onclick="document.getElementById('planFile').click()">
+                        <i class="fas fa-cloud-upload-alt fa-2x text-muted"></i>
+                        <p class="mb-0 text-muted mt-2">Click to upload or take photo</p>
+                        <input type="file" id="planFile" accept="image/*" capture="environment" style="display: none;"
+                            onchange="handleFileSelect(this)">
+                        <p id="fileName" class="mt-2 text-primary small"></p>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-next">Next: Create Quotation <i
+                    class="fas fa-arrow-right ms-2"></i></button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function handleWorkTypeChange(select) {
+            const customInput = document.getElementById('customWorkType');
+            if (select.value === 'others') {
+                customInput.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customInput.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+
+        function addFamilyRow(data = null) {
+            const tbody = document.getElementById('familyTableBody');
+            const tr = document.createElement('tr');
+            tr.className = 'family-member-row';
+            tr.innerHTML = `
+                <td>
+                    <select class="form-select form-select-sm mem-type">
+                        <option value="Spouse" ${data && data.type === 'Spouse' ? 'selected' : ''}>Spouse</option>
+                        <option value="Child" ${data && data.type === 'Child' ? 'selected' : ''}>Child</option>
+                        <option value="Parents" ${data && data.type === 'Parents' ? 'selected' : ''}>Parents</option>
+                        <option value="Siblings" ${data && data.type === 'Siblings' ? 'selected' : ''}>Siblings</option>
+                        <option value="Others" ${data && data.type === 'Others' ? 'selected' : ''}>Others</option>
+                    </select>
+                </td>
+                <td><input type="text" class="form-control form-control-sm mem-name" value="${data ? data.name : ''}" required placeholder="Name"></td>
+                <td><input type="tel" class="form-control form-control-sm mem-contact" value="${data ? data.contact : ''}" placeholder="Contact"></td>
+                <td><input type="email" class="form-control form-control-sm mem-email" value="${data ? data.email : ''}" placeholder="Email"></td>
+                <td><input type="date" class="form-control form-control-sm mem-birth" value="${data ? data.birthdate : ''}"></td>
+                <td class="text-center"><input class="form-check-input mem-design" type="checkbox" ${data && data.designApproval ? 'checked' : ''}></td>
+                <td class="text-center"><input class="form-check-input mem-finance" type="checkbox" ${data && data.financeApproval ? 'checked' : ''}></td>
+                <td>
+                    <button type="button" class="btn btn-link btn-sm text-danger p-0" onclick="this.closest('tr').remove()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function getFamilyData() {
+            const members = [];
+            document.querySelectorAll('.family-member-row').forEach(row => {
+                const name = row.querySelector('.mem-name').value;
+                if (name) {
+                    members.push({
+                        type: row.querySelector('.mem-type').value,
+                        name: name,
+                        contact: row.querySelector('.mem-contact').value,
+                        email: row.querySelector('.mem-email').value,
+                        birthdate: row.querySelector('.mem-birth').value,
+                        designApproval: row.querySelector('.mem-design').checked,
+                        financeApproval: row.querySelector('.mem-finance').checked
+                    });
+                }
+            });
+            return members;
+        }
+
+        function handleFileSelect(input) {
+            const name = input.files[0]?.name;
+            if (name) document.getElementById('fileName').textContent = 'Selected: ' + name;
+        }
+
+        document.getElementById('detailsForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Gather Data
+            const workTypeSelect = document.getElementById('workType');
+            const workValue = workTypeSelect.value === 'others' ? document.getElementById('customWorkType').value : workTypeSelect.value;
+
+            const customerData = {
+                name: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                address: document.getElementById('custAddress').value,
+                birthDate: document.getElementById('birthDate').value,
+                anniversaryDate: document.getElementById('anniversaryDate').value,
+                familyMembers: getFamilyData(),
+                project: {
+                    type: workValue,
+                    carpetArea: document.getElementById('carpetArea').value,
+                    areaUnit: document.getElementById('areaUnit').value,
+                    builtUpArea: document.getElementById('builtUpArea').value,
+                    budget: document.getElementById('clientBudget').value,
+                    timeline: document.getElementById('timeline').value
+                },
+                hasPlan: document.getElementById('planFile').files.length > 0
+            };
+
+            // Save to temp storage
+            localStorage.setItem('tempCustomerDetails', JSON.stringify(customerData));
+
+            // Redirect
+            window.location.href = 'create.html';
+        });
+
+        // Initialize with one empty family row
+        addFamilyRow();
+    </script>
+</body>
+
+</html>

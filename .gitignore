@@ -1,0 +1,19 @@
+# Target directories
+target/
+**/target/
+frontend/dist/
+frontend/node_modules/
+node_modules/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# Log files
+*.log
+.system_generated/
+
+# Ignored sub-projects
+untitled/

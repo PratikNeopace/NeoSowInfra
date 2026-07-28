@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Proforma Invoice</title>
+    <style type="text/css">
+        @page {
+            size: a4 portrait;
+            margin: 15mm 15mm 20mm 15mm;
+            @bottom-right {
+                content: "Page " counter(page) " of " counter(pages);
+                font-family: Arial, sans-serif;
+                font-size: 8pt;
+                color: #777777;
+            }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            color: #333333;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .header-title {
+            color: #667eea;
+            font-size: 24pt;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .header-subtitle {
+            color: #6c757d;
+            font-size: 10pt;
+            margin: 5px 0 0 0;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        .info-header {
+            color: #667eea;
+            font-size: 11pt;
+            font-weight: bold;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 5px;
+            margin-bottom: 8px;
+        }
+
+        .info-cell {
+            width: 50%;
+            vertical-align: top;
+            padding-right: 15px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }
+
+        .items-table th {
+            background-color: #667eea;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+            font-size: 9pt;
+            border: 1px solid #dee2e6;
+        }
+
+        .items-table td {
+            padding: 8px;
+            font-size: 9pt;
+            border: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .summary-container {
+            width: 100%;
+            margin-top: 15px;
+            margin-bottom: 30px;
+        }
+
+        .summary-table {
+            width: 300px;
+            margin-left: auto;
+            border-collapse: collapse;
+        }
+
+        .summary-table td {
+            padding: 6px 10px;
+            font-size: 10pt;
+        }
+
+        .summary-border {
+            border-top: 1px solid #dee2e6;
+        }
+
+        .total-row {
+            background-color: #667eea;
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 12pt;
+        }
+
+        .total-row td {
+            padding: 10px;
+        }
+
+        .terms-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+
+        .terms-title {
+            font-weight: bold;
+            font-size: 9pt;
+            color: #333333;
+            margin-bottom: 5px;
+        }
+
+        .terms-text {
+            font-size: 8pt;
+            color: #6c757d;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Block -->
+    <table class="header-table">
+        <tr>
+            <td>
+                <h1 class="header-title">PROFORMA INVOICE</h1>
+                <p class="header-subtitle">Professional SowInfra Proforma Invoice</p>
+            </td>
+            <td class="text-right" style="vertical-align: bottom;">
+                <p style="margin: 0; font-weight: bold; color: #667eea; font-size: 12pt;">NEOSOW INFRA</p>
+                <p style="margin: 3px 0 0 0; font-size: 9pt; color: #6c757d;">Email: support@neosow.com | Web: www.neosow.com</p>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Info Block -->
+    <table class="info-table">
+        <tr>
+            <td class="info-cell">
+                <div class="info-header">CLIENT DETAILS</div>
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 80px; font-weight: bold; padding: 2px 0;">Client Name:</td>
+                        <td style="padding: 2px 0;" th:text="${quotation.customerName}">John Doe</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 2px 0;">Phone:</td>
+                        <td style="padding: 2px 0;" th:text="${customer.phone}">+91 9876543210</td>
+                    </tr>
+                    <tr th:if="${customer.address != null and !customer.address.isEmpty()}">
+                        <td style="font-weight: bold; padding: 2px 0; vertical-align: top;">Address:</td>
+                        <td style="padding: 2px 0;" th:text="${customer.address}">123 Main St, City</td>
+                    </tr>
+                </table>
+            </td>
+            <td class="info-cell" style="padding-left: 15px; padding-right: 0;">
+                <div class="info-header">PROFORMA INVOICE DETAILS</div>
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 100px; font-weight: bold; padding: 2px 0;">Invoice ID:</td>
+                        <td style="padding: 2px 0;" th:text="${quotation.id}">QT-12345</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 2px 0;">Date:</td>
+                        <td style="padding: 2px 0;" th:text="${#temporals.format(quotation.createdAt, 'dd-MM-yyyy HH:mm')}">05-06-2026</td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; padding: 2px 0;">Unit Setting:</td>
+                        <td style="padding: 2px 0;" th:text="${quotation.projectUnit}">Ft Inch</td>
+                    </tr>
+                    <tr th:if="${customer.project != null}">
+                        <td style="font-weight: bold; padding: 2px 0;">Work Type:</td>
+                        <td style="padding: 2px 0;" th:text="${customer.project.workType}">Duplex Residency</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Items Block -->
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th style="width: 40px;">S.No</th>
+                <th>Description</th>
+                <th style="width: 55px;">Width</th>
+                <th style="width: 55px;">Height</th>
+                <th style="width: 55px;">Depth</th>
+                <th style="width: 65px;">Unit</th>
+                <th style="width: 50px;">Qty</th>
+                <th style="width: 45px;">Nos</th>
+                <th style="width: 65px;">Total Qty</th>
+                <th style="width: 75px;">Rate</th>
+                <th style="width: 85px;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item, iterStat : ${quotation.items}">
+                <td class="text-center" th:text="${iterStat.count}">1</td>
+                <td>
+                    <strong th:text="${item.category}">Category</strong>
+                    <span th:if="${item.subcategory != null and !item.subcategory.isEmpty()}" th:text="' - ' + ${item.subcategory}"> - Subcategory</span>
+                    <div style="font-size: 8pt; color: #6c757d; margin-top: 3px;" th:if="${item.description != null and !item.description.isEmpty()}" th:text="${item.description}">Description</div>
+                </td>
+                <td class="text-center" th:text="${item.width != null and !item.width.isEmpty() ? item.width : '-'}">5' 0"</td>
+                <td class="text-center" th:text="${item.height != null and !item.height.isEmpty() ? item.height : '-'}">6' 0"</td>
+                <td class="text-center" th:text="${item.depth != null and !item.depth.isEmpty() ? item.depth : '-'}">1' 0"</td>
+                <td class="text-center" th:text="${item.unit}">SQ.FT.</td>
+                <td class="text-center" th:text="${item.qty}">30.00</td>
+                <td class="text-center" th:text="${item.noOfUnit != null ? item.noOfUnit : '1.00'}">1.00</td>
+                <td class="text-center" th:text="${item.totalQty != null ? item.totalQty : item.qty}">30.00</td>
+                <td class="text-right" th:text="'₹' + ${#numbers.formatDecimal(item.unitRate, 1, 2)}">₹500.00</td>
+                <td class="text-right" th:text="'₹' + ${#numbers.formatDecimal(item.amount, 1, 2)}">₹15,000.00</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Summary Block -->
+    <div class="summary-container">
+        <table class="summary-table">
+            <tr>
+                <td>Subtotal:</td>
+                <td class="text-right" th:text="'₹' + ${#numbers.formatDecimal(quotation.subtotal, 1, 2)}">₹15,000.00</td>
+            </tr>
+            <tr style="color: #dc3545;" th:if="${quotation.discount.compareTo(T(java.math.BigDecimal).ZERO) > 0}">
+                <td th:text="${quotation.discountPercent != null} ? 'Discount (' + ${#numbers.formatDecimal(quotation.discountPercent, 1, 2)} + '%):' : 'Discount:'">Discount:</td>
+                <td class="text-right" th:text="'- ₹' + ${#numbers.formatDecimal(quotation.discount, 1, 2)}">- ₹1,000.00</td>
+            </tr>
+            <tr class="summary-border" th:if="${quotation.includeGst}">
+                <td>GST (18%):</td>
+                <td class="text-right" th:text="'₹' + ${#numbers.formatDecimal(quotation.gstAmount, 1, 2)}">₹2,520.00</td>
+            </tr>
+            <tr class="total-row">
+                <td>GRAND TOTAL:</td>
+                <td class="text-right" th:text="'₹' + ${#numbers.formatDecimal(quotation.totalAmount, 1, 2)}">₹16,520.00</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Terms Box -->
+    <div class="terms-box">
+        <div class="terms-title">Terms &amp; Conditions:</div>
+        <p class="terms-text">
+            1. This proforma invoice is valid for 30 days from the date of issue.<br />
+            2. 50% advance payment is required to commence fabrication work.<br />
+            3. Delivery and installation timelines will be confirmed upon order receipt.<br />
+            4. Any changes to dimensions or specifications will affect the final billing.
+        </p>
+    </div>
+
+</body>
+</html>

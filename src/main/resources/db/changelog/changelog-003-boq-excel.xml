@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="5" author="neosow">
+        <!-- Import Jobs Table -->
+        <createTable tableName="import_jobs">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="uploaded_by" type="UUID"/>
+            <column name="role" type="VARCHAR(50)"/>
+            <column name="file_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_rows" type="INTEGER" defaultValueNumeric="0"/>
+            <column name="success_rows" type="INTEGER" defaultValueNumeric="0"/>
+            <column name="failed_rows" type="INTEGER" defaultValueNumeric="0"/>
+            <column name="created_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="import_jobs" baseColumnNames="uploaded_by"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_import_jobs_uploader" onDelete="SET NULL"/>
+
+        <!-- Import Errors Table -->
+        <createTable tableName="import_errors">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="job_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="row_number" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_message" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="raw_data" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="import_errors" baseColumnNames="job_id"
+                                 referencedTableName="import_jobs" referencedColumnNames="id"
+                                 constraintName="fk_import_errors_job" onDelete="CASCADE"/>
+
+        <!-- BOQ Items Table -->
+        <createTable tableName="boq_items">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="job_id" type="UUID"/>
+            <column name="main_heading" type="VARCHAR(255)"/>
+            <column name="sub_heading" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="width" type="VARCHAR(50)"/>
+            <column name="height" type="VARCHAR(50)"/>
+            <column name="depth" type="VARCHAR(50)"/>
+            <column name="qty" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit" type="VARCHAR(50)"/>
+            <column name="no_of_unit" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_qty" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rate" type="DECIMAL(15,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="DECIMAL(15,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="UUID"/>
+            <column name="admin_id" type="UUID"/>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="boq_items" baseColumnNames="job_id"
+                                 referencedTableName="import_jobs" referencedColumnNames="id"
+                                 constraintName="fk_boq_items_job" onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint baseTableName="boq_items" baseColumnNames="created_by"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_boq_items_creator" onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint baseTableName="boq_items" baseColumnNames="admin_id"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_boq_items_admin" onDelete="SET NULL"/>
+    </changeSet>
+
+</databaseChangeLog>

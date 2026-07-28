@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - User Portal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #667eea;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #6c757d;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 12px 15px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            outline: none;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 13px;
+        }
+
+        .remember-forgot a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .remember-forgot a:hover {
+            color: #764ba2;
+        }
+
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .btn-login:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .form-control.is-invalid {
+            border-color: #dc3545;
+        }
+
+        .signup-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+
+        .signup-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link a:hover {
+            color: #764ba2;
+        }
+
+        .loading-spinner {
+            display: none;
+            margin-right: 8px;
+        }
+
+        .show-password {
+            cursor: pointer;
+            color: #667eea;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your account to continue</p>
+        </div>
+
+        <form id="loginForm">
+            <!-- Email Input -->
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input 
+                    type="email" 
+                    class="form-control" 
+                    id="email" 
+                    placeholder="Enter your email"
+                    required
+                >
+                <div class="error-message" id="emailError"></div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input 
+                    type="password" 
+                    class="form-control" 
+                    id="password" 
+                    placeholder="Enter your password"
+                    required
+                >
+                <div class="show-password">
+                    <input type="checkbox" id="showPassword"> Show Password
+                </div>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <!-- Remember & Forgot -->
+            <div class="remember-forgot">
+                <label class="form-check-label">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    Remember me
+                </label>
+                <a href="#" onclick="alert('Password reset feature coming soon!'); return false;">Forgot password?</a>
+            </div>
+
+            <!-- Login Button -->
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span class="loading-spinner" id="spinner">
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </span>
+                Sign In
+            </button>
+        </form>
+
+        <!-- Signup Link -->
+        <div class="signup-link">
+            Don't have an account? <a href="#" onclick="alert('Sign up feature coming soon!'); return false;">Create account</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Form Elements
+        const loginForm = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const spinner = document.getElementById('spinner');
+        const showPasswordCheckbox = document.getElementById('showPassword');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+
+        // Email Validation
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // Clear Error Messages
+        function clearErrors() {
+            document.getElementById('emailError').classList.remove('show');
+            document.getElementById('passwordError').classList.remove('show');
+            emailInput.classList.remove('is-invalid');
+            passwordInput.classList.remove('is-invalid');
+        }
+
+        // Show Error Message
+        function showError(inputId, message) {
+            const errorElement = document.getElementById(inputId + 'Error');
+            errorElement.textContent = message;
+            errorElement.classList.add('show');
+            document.getElementById(inputId).classList.add('is-invalid');
+        }
+
+        // Toggle Password Visibility
+        showPasswordCheckbox.addEventListener('change', function() {
+            passwordInput.type = this.checked ? 'text' : 'password';
+        });
+
+        // Real-time Email Validation
+        emailInput.addEventListener('blur', function() {
+            if (this.value && !validateEmail(this.value)) {
+                showError('email', 'Please enter a valid email address');
+            } else {
+                document.getElementById('emailError').classList.remove('show');
+                emailInput.classList.remove('is-invalid');
+            }
+        });
+
+        // Password Length Check
+        passwordInput.addEventListener('blur', function() {
+            if (this.value && this.value.length < 6) {
+                showError('password', 'Password must be at least 6 characters');
+            } else {
+                document.getElementById('passwordError').classList.remove('show');
+                passwordInput.classList.remove('is-invalid');
+            }
+        });
+
+        // Form Submission
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Clear previous errors
+            clearErrors();
+
+            // Validate Email
+            if (!emailInput.value) {
+                showError('email', 'Email is required');
+                return;
+            }
+
+            if (!validateEmail(emailInput.value)) {
+                showError('email', 'Please enter a valid email address');
+                return;
+            }
+
+            // Validate Password
+            if (!passwordInput.value) {
+                showError('password', 'Password is required');
+                return;
+            }
+
+            if (passwordInput.value.length < 6) {
+                showError('password', 'Password must be at least 6 characters');
+                return;
+            }
+
+            // Show Loading State
+            loginBtn.disabled = true;
+            spinner.style.display = 'inline-block';
+            loginBtn.textContent = ' Signing in...';
+
+            // Simulate API Call (2 second delay)
+            setTimeout(function() {
+                // Store credentials if "Remember me" is checked
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('rememberedEmail', emailInput.value);
+                } else {
+                    localStorage.removeItem('rememberedEmail');
+                }
+
+                // Store user data and redirect
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userEmail', emailInput.value);
+                localStorage.setItem('loginTime', new Date().toLocaleString());
+
+                // Redirect to Home Page
+                window.location.href = 'home.html';
+            }, 2000);
+        });
+
+        // Load Remembered Email on Page Load
+        window.addEventListener('load', function() {
+            const rememberedEmail = localStorage.getItem('rememberedEmail');
+            if (rememberedEmail) {
+                emailInput.value = rememberedEmail;
+                rememberMeCheckbox.checked = true;
+            }
+        });
+
+        // Clear on input to remove error state
+        emailInput.addEventListener('input', function() {
+            document.getElementById('emailError').classList.remove('show');
+            emailInput.classList.remove('is-invalid');
+        });
+
+        passwordInput.addEventListener('input', function() {
+            document.getElementById('passwordError').classList.remove('show');
+            passwordInput.classList.remove('is-invalid');
+        });
+    </script>
+</body>
+</html>

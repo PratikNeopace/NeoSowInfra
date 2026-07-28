@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="7" author="neosow">
+        <!-- Add approval and status columns to boq_items -->
+        <addColumn tableName="boq_items">
+            <column name="status" type="VARCHAR(30)" defaultValue="APPROVED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uploaded_by" type="UUID"/>
+            <column name="uploaded_role" type="VARCHAR(50)"/>
+            <column name="approved_by" type="UUID"/>
+            <column name="approved_at" type="TIMESTAMP"/>
+            <column name="is_new_value" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="boq_items" baseColumnNames="uploaded_by"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_boq_items_uploaded_by" onDelete="SET NULL"/>
+
+        <addForeignKeyConstraint baseTableName="boq_items" baseColumnNames="approved_by"
+                                 referencedTableName="users" referencedColumnNames="id"
+                                 constraintName="fk_boq_items_approved_by" onDelete="SET NULL"/>
+    </changeSet>
+
+</databaseChangeLog>

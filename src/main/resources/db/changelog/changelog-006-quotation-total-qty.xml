@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="6" author="neosow">
+        <addColumn tableName="quotation_items">
+            <column name="no_of_unit" type="DECIMAL(10,2)" defaultValueNumeric="1.0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_qty" type="DECIMAL(10,2)" defaultValueNumeric="0.0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <sql>
+            UPDATE quotation_items SET total_qty = qty WHERE total_qty = 0.0;
+        </sql>
+    </changeSet>
+</databaseChangeLog>

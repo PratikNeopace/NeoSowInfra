@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quotation - User Portal</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+
+        .container-card {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-row {
+            gap: 12px;
+        }
+
+        .table-wrap {
+            overflow: auto;
+            margin: 20px 0;
+        }
+
+        .action-btn {
+            margin-right: 6px;
+        }
+
+        /* Header Styles */
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .header-section h2 {
+            color: #667eea;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background: #5a6268;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Customer Info Section */
+        .customer-info-section {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .customer-info-section h5 {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .customer-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .customer-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .customer-field label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+
+        .customer-field input {
+            border: 1px solid #dee2e6;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .form-section h5 {
+            color: #667eea;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Table Styles */
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Action Buttons */
+        .btn-add {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Summary Section */
+        .summary-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 16px;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .summary-label {
+            font-weight: 600;
+        }
+
+        .summary-value {
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        /* Action Buttons Section */
+        .action-section {
+            display: flex;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn-view-quotation {
+            flex: 1;
+            min-width: 150px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .btn-view-quotation:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-download-pdf {
+            flex: 1;
+            min-width: 150px;
+            background: #fd7e14;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .btn-download-pdf:hover {
+            background: #e6690d;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(253, 126, 20, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-save-customer {
+            flex: 1;
+            min-width: 150px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+
+        .btn-save-customer:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+        }
+
+        .modal-title {
+            font-weight: 700;
+        }
+
+        .btn-close {
+            filter: brightness(0) invert(1);
+        }
+
+        @media (max-width: 768px) {
+            .action-section {
+                flex-direction: column;
+            }
+
+            .btn-view-quotation,
+            .btn-download-pdf,
+            .btn-save-customer {
+                width: 100%;
+            }
+
+            .header-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .table {
+                font-size: 12px;
+            }
+        }
+
+        .project-summary {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .project-summary strong {
+            color: #667eea;
+        }
+
+        .unit-selector {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container container-card">
+        <!-- Header -->
+        <div class="header-section">
+            <h2><i class="fas fa-file-invoice"></i> Create Quotation</h2>
+            <div class="header-actions">
+                <a href="customer_details.html" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Details
+                </a>
+            </div>
+        </div>
+
+        <!-- Project Unit Selection -->
+        <div class="unit-selector">
+            <label class="fw-bold mb-0">Project Unit Setting:</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="projectUnit" id="unitFt" value="Ft Inch"
+                    onchange="updateAllUnits()" checked>
+                <label class="form-check-label" for="unitFt">Ft Inch</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="projectUnit" id="unitMt" value="Meter & MM"
+                    onchange="updateAllUnits()">
+                <label class="form-check-label" for="unitMt">Meter & MM</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="projectUnit" id="unitKg" value="Kgs"
+                    onchange="updateAllUnits()">
+                <label class="form-check-label" for="unitKg">Kgs</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="projectUnit" id="unitOther" value="Others"
+                    onchange="updateAllUnits()">
+                <label class="form-check-label" for="unitOther">Others</label>
+            </div>
+        </div>
+
+        <!-- Customer & Project Summary -->
+        <div class="customer-info-section">
+            <h5><i class="fas fa-user"></i> Customer & Project Details</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="small text-muted">Customer Name</label>
+                    <div id="dispName" class="fw-bold">-</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="small text-muted">Phone</label>
+                    <div id="dispPhone" class="fw-bold">-</div>
+                </div>
+                <div class="col-md-4">
+                    <label class="small text-muted">Work Type</label>
+                    <div id="dispWorkType" class="fw-bold">-</div>
+                </div>
+                <div class="col-md-12">
+                    <div class="project-summary">
+                        <div class="row">
+                            <div class="col-md-3"><strong>Area:</strong> <span id="dispArea">-</span></div>
+                            <div class="col-md-3"><strong>Budget:</strong> <span id="dispBudget">-</span></div>
+                            <div class="col-md-3"><strong>Timeline:</strong> <span id="dispTimeline">-</span></div>
+                            <div class="col-md-3"><strong>Plan:</strong> <span id="dispPlan">Not Uploaded</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Items Table -->
+        <div class="table-wrap">
+            <table class="table table-bordered table-hover" id="itemsTable">
+                <thead>
+                    <tr>
+                        <th style="width: 50px;">S.No</th>
+                        <th style="min-width: 250px;">Description</th>
+                        <th style="width: 80px;">Width</th>
+                        <th style="width: 80px;">Height</th>
+                        <th style="width: 80px;">Depth</th>
+                        <th style="min-width: 100px;">Unit</th>
+                        <th style="width: 100px;">Qty</th>
+                        <th style="min-width: 100px;">Rate</th>
+                        <th style="width: 80px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsTbody">
+                    <!-- Rows will be added dynamically -->
+                </tbody>
+            </table>
+
+            <div class="d-flex justify-content-start mb-4">
+                <button class="btn-add" id="addRowBtn" onclick="addRow()">
+                    <i class="fas fa-plus"></i> Add New Item
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="summary-section" id="summarySection" style="display:none;">
+            <div class="summary-row">
+                <span class="summary-label">Subtotal:</span>
+                <span class="summary-value">₹<span id="subtotal">0.00</span></span>
+            </div>
+            <div class="summary-row align-items-center">
+                <span class="summary-label">Discount:</span>
+                <input type="number" id="discountInput" class="form-control form-control-sm text-end"
+                    style="width: 120px;" value="0" min="0" oninput="updateSummary()">
+            </div>
+            <div class="summary-row mt-2 align-items-center">
+                <div class="form-check p-0">
+                    <input class="form-check-input ms-0 me-2" type="checkbox" id="includeGST" checked
+                        onchange="updateSummary()">
+                    <label class="form-check-label" for="includeGST">Include GST (18%)</label>
+                </div>
+                <span class="summary-value">₹<span id="gst">0.00</span></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Total Amount:</span>
+                <span class="summary-value">₹<span id="totalAmount">0.00</span></span>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-section" id="actionSection" style="display:none;">
+            <button class="btn-view-quotation" onclick="viewQuotation()">
+                <i class="fas fa-eye"></i> View Quotation
+            </button>
+            <button class="btn-download-pdf" onclick="downloadPDF()">
+                <i class="fas fa-download"></i> Download PDF
+            </button>
+            <button class="btn-save-customer" onclick="saveCustomer()">
+                <i class="fas fa-save"></i> Save & Go Back
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit"></i> Edit Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <input type="hidden" id="editIndex">
+                        <div class="mb-2">
+                            <label class="form-label">Description</label>
+                            <input id="editDesc" class="form-control">
+                        </div>
+                        <div class="row">
+                            <div class="col-6 mb-2">
+                                <label class="form-label">Qty</label>
+                                <input id="editQty" type="number" class="form-control" min="0" step="0.01">
+                            </div>
+                            <div class="col-6 mb-2">
+                                <label class="form-label">Unit Rate</label>
+                                <input id="editRate" type="number" class="form-control" min="0" step="0.01">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveEdit">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quotation View Modal -->
+    <div class="modal fade" id="quotationModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-file-invoice-dollar"></i> Quotation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="quotationContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+        const categoryMap = {
+            partitions: ['Glass Partition', 'Gypsum Partition', 'Wooden Partition', 'Others'],
+            doors: ['Single Door', 'Double Door', 'Sliding Door', 'Others'],
+            windows: ['Sliding Window', 'Casement Window', 'Fixed Window', 'Others'],
+            ceilings: ['POP Ceiling', 'Grid Ceiling', 'Gypsum Ceiling', 'Others'],
+            others: ['Others']
+        };
+
+        const itemsTbody = document.getElementById('itemsTbody');
+        const summarySection = document.getElementById('summarySection');
+        const actionSection = document.getElementById('actionSection');
+
+        let currentCustomerId = localStorage.getItem('currentCustomerId');
+        let tempCustomer = {};
+
+        // Load Temp Data
+        function loadTempData() {
+            // Check if editing existing
+            if (currentCustomerId !== null && currentCustomerId !== 'null') {
+                const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+                tempCustomer = customers[parseInt(currentCustomerId)];
+                if (tempCustomer) {
+                    renderCustomerInfo(tempCustomer);
+                    // Restore Discount and GST
+                    if (tempCustomer.discount !== undefined) {
+                        document.getElementById('discountInput').value = tempCustomer.discount;
+                    }
+                    if (tempCustomer.includeGST !== undefined) {
+                        document.getElementById('includeGST').checked = tempCustomer.includeGST;
+                    }
+                    // Restore Family Members
+                    if (tempCustomer.familyMembers && tempCustomer.familyMembers.length > 0) {
+                        document.getElementById('familyBody').innerHTML = '';
+                        tempCustomer.familyMembers.forEach(mem => addFamilyMember(mem));
+                    }
+                    // Also set unit radio if saved
+                    if (tempCustomer.projectUnit) {
+                        const radio = document.querySelector(`input[name="projectUnit"][value="${tempCustomer.projectUnit}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    // Load items into table
+                    if (tempCustomer.items && tempCustomer.items.length > 0) {
+                        tempCustomer.items.forEach(item => addRow(item));
+                    } else {
+                        addRow(); // Start with one empty row
+                    }
+                }
+            } else {
+                // New Creation Flow
+                const temp = localStorage.getItem('tempCustomerDetails');
+                if (temp) {
+                    tempCustomer = JSON.parse(temp);
+                    renderCustomerInfo(tempCustomer); // Call renderCustomerInfo here
+                    // Restore Family Members (if tempCustomerDetails includes them)
+                    if (tempCustomer.familyMembers && tempCustomer.familyMembers.length > 0) {
+                        document.getElementById('familyBody').innerHTML = '';
+                        tempCustomer.familyMembers.forEach(mem => addFamilyMember(mem));
+                    }
+                    // Also set unit radio if saved
+                    if (tempCustomer.projectUnit) {
+                        const radio = document.querySelector(`input[name="projectUnit"][value="${tempCustomer.projectUnit}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                    addRow(); // Start with one empty row
+                } else {
+                    alert('No customer details found. Redirecting...');
+                    window.location.href = 'customer_details.html';
+                }
+            }
+            updateSummary();
+        }
+
+        function renderCustomerInfo(data) {
+            // This function now populates display elements, not form inputs directly
+            document.getElementById('dispName').textContent = data.name || (data.personalDetails ? data.personalDetails.name : '-');
+            document.getElementById('dispPhone').textContent = data.phone || (data.personalDetails ? data.personalDetails.phone : '-');
+            // Assuming 'dispAddress' exists in the HTML for display
+            // document.getElementById('dispAddress').textContent = data.address || '-'; 
+
+            const proj = data.project || data.projectDetails || {};
+            let workTypeToDisplay = proj.type || '-';
+
+            // Handle custom work type restoration for display
+            if (proj.type === 'others' && proj.customWorkType) {
+                workTypeToDisplay = proj.customWorkType;
+            } else if (data.workType) { // Fallback for older structure or direct workType
+                workTypeToDisplay = data.workType;
+            }
+
+            const sub = proj.subType || '';
+            document.getElementById('dispWorkType').textContent = workTypeToDisplay + (sub ? ` (${sub})` : '');
+
+            document.getElementById('dispArea').textContent = (proj.carpetArea || '-') + ' ' + (proj.areaUnit || '');
+            document.getElementById('dispBudget').textContent = proj.budget ? '₹' + proj.budget : '-';
+            document.getElementById('dispTimeline').textContent = proj.timeline || '-';
+            document.getElementById('dispPlan').textContent = data.hasPlan ? 'Uploaded' : 'None';
+        }
+
+        function getUnitOptions(type) {
+            if (type === 'Meter & MM') {
+                return ['SQ.MTR.', 'R.MTR.', 'CU.MTR.', 'NUMBER', 'JOB', 'Others'];
+            } else if (type === 'Kgs') {
+                return ['KGS', 'NUMBER', 'JOB', 'Others'];
+            } else {
+                // Default to Ft Inch logic
+                return ['SQ.FT.', 'R.FT.', 'CU.FT.', 'NUMBER', 'JOB', 'Others'];
+            }
+        }
+
+        function parseDimension(val) {
+            if (!val) return 0;
+            val = val.toString().trim();
+
+            // Try standard float if it LOOKS like a decimal number and has no quotes
+            if (!isNaN(val) && !val.includes('\'') && !val.includes('"')) {
+                return parseFloat(val);
+            }
+
+            // Feet-Inch parsing
+            const parts = val.split(/'|ft/i);
+            if (parts.length > 1) {
+                const ft = parseFloat(parts[0]) || 0;
+                const inchStr = parts[1].replace(/["in\s]/gi, '');
+                const inch = parseFloat(inchStr) || 0;
+                return ft + (inch / 12.0);
+            }
+
+            return parseFloat(val) || 0;
+        }
+
+        function formatDimension(input) {
+            // Check Project Unit
+            const unitType = document.querySelector('input[name="projectUnit"]:checked').value;
+            const row = input.closest('tr');
+            const unit = row.querySelector('.unit-select').value;
+            const normalizedUnit = unit.toUpperCase().replace(/\./g, '').replace(/\s/g, '');
+
+            let val = input.value.trim();
+            if (!val) return;
+
+            let decimalVal = parseDimension(val);
+            if (decimalVal < 0) decimalVal = 0;
+
+            if (unitType === 'Ft Inch') {
+                let ft = Math.floor(decimalVal);
+                let inches = (decimalVal - ft) * 12;
+
+                // Smart Rounding Logic (3, 6, 9, 12) for all Ft-Inch dimensions
+                let roundedInches = 0;
+                if (inches <= 0.01) roundedInches = 0;
+                else if (inches <= 3) roundedInches = 3;
+                else if (inches <= 6) roundedInches = 6;
+                else if (inches <= 9) roundedInches = 9;
+                else {
+                    ft += 1;
+                    roundedInches = 0;
+                }
+                input.value = `${ft}' ${roundedInches}"`;
+            } else {
+                // Meter & MM: Strictly Decimal
+                input.value = decimalVal.toFixed(2);
+            }
+
+            calculateRow(input);
+        }
+
+        function updateAllUnits() {
+            const unitType = document.querySelector('input[name="projectUnit"]:checked').value;
+            const newOptions = getUnitOptions(unitType);
+
+            // Loop through all tables rows and update select options
+            const selects = document.querySelectorAll('.unit-select');
+            selects.forEach(select => {
+                const currentVal = select.value;
+                // Clear existing
+                select.innerHTML = '';
+                // Add new options
+                newOptions.forEach(opt => {
+                    const el = document.createElement('option');
+                    el.value = opt;
+                    el.textContent = opt;
+                    // Try to preserve selection if possible (SQFT -> SQ.MTR roughly?)
+                    // Or just default to first? The user might not want auto-convert.
+                    // Let's settle on default or maintain index if relevant.
+                    // Simple heuristic: if value includes SQ, select SQ option.
+                    if (currentVal && currentVal.includes('SQ') && opt.includes('SQ')) el.selected = true;
+                    else if (currentVal && currentVal.includes('R') && opt.includes('R')) el.selected = true;
+                    else if (currentVal && currentVal.includes('CU') && opt.includes('CU')) el.selected = true;
+                    else if (currentVal === 'NO.' && opt === 'NO.') el.selected = true;
+                    else if (currentVal === 'JOB' && opt === 'JOB') el.selected = true;
+
+                    select.appendChild(el);
+                });
+
+                // Recalculate row since unit changed
+                calculateRow(select);
+            });
+        }
+
+        // Add Row Function - The core of the new inline editing system
+        function addRow(data = null) {
+            const rowCount = itemsTbody.rows.length;
+            const tr = document.createElement('tr');
+            tr.className = 'item-row';
+
+            // Generate Category Options
+            let catOptions = '<option value="">Select...</option>';
+            for (const k in categoryMap) {
+                const selected = (data && data.category === k) ? 'selected' : '';
+                catOptions += `<option value="${k}" ${selected}>${k.charAt(0).toUpperCase() + k.slice(1)}</option>`;
+            }
+
+            // Determine Unit Selection based on current project unit
+            const unitType = document.querySelector('input[name="projectUnit"]:checked').value;
+            const units = getUnitOptions(unitType);
+            let unitOptions = '';
+            units.forEach(u => {
+                const selected = (data && data.unit === u) ? 'selected' : '';
+                unitOptions += `<option value="${u}" ${selected}>${u}</option>`;
+            });
+
+            tr.innerHTML = `
+                <td class="text-center row-number">${rowCount + 1}</td>
+                <td>
+                    <select class="form-select form-select-sm cat-select mb-2" onchange="updateSubcats(this)">
+                        ${catOptions}
+                    </select>
+                    <input type="text" class="form-control form-control-sm other-cat-input mb-2" style="display:none;" placeholder="Specify Category">
+                    <div class="sub-checks-container border rounded p-2 mb-2 bg-light" style="max-height: 100px; overflow-y: auto;">
+                        <!-- Subcategory checkboxes will be injected here -->
+                    </div>
+                    <div class="other-sub-wrap mb-2" style="display:none;">
+                        <input type="text" class="form-control form-control-sm other-sub-input" placeholder="Specify Subcategory">
+                    </div>
+                    <input type="text" class="form-control form-control-sm desc-input" value="${data ? (data.description || '') : ''}" placeholder="Additional Description" oninput="calculateRow(this)">
+                </td>
+                <td><input type="text" class="form-control form-control-sm w-input" value="${data ? (data.width || '') : ''}" oninput="calculateRow(this)" onchange="formatDimension(this)"></td>
+                <td><input type="text" class="form-control form-control-sm h-input" value="${data ? (data.height || '') : ''}" oninput="calculateRow(this)" onchange="formatDimension(this)"></td>
+                <td><input type="text" class="form-control form-control-sm d-input" value="${data ? (data.depth || '') : ''}" oninput="calculateRow(this)" onchange="formatDimension(this)"></td>
+                <td>
+                    <select class="form-select form-select-sm unit-select" onchange="calculateRow(this)">
+                        ${unitOptions}
+                    </select>
+                </td>
+                <td><input type="text" class="form-control form-control-sm qty-input" value="${data ? (data.qty || '1.00') : '1.00'}" readonly style="background-color: #f8f9fa;"></td>
+                <td><input type="number" class="form-control form-control-sm rate-input" step="0.01" value="${data ? (data.unitRate || 0) : 0}" oninput="calculateRow(this)"></td>
+                <td style="display:none;"><input type="hidden" class="multiplier-input" value="1"></td>
+                <td style="display:none;"><input type="text" class="amount-input" value="${data ? (Number(data.amount).toFixed(2)) : '0.00'}"></td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-danger" onclick="deleteRow(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            // Add lock unit listener
+            tr.querySelectorAll('input, select').forEach(input => {
+                input.addEventListener('change', () => {
+                    const radios = document.querySelectorAll('input[name="projectUnit"]');
+                    radios.forEach(r => r.disabled = true);
+                });
+            });
+
+            itemsTbody.appendChild(tr);
+
+            // Initializing handlers for the new row
+            const catSelect = tr.querySelector('.cat-select');
+
+            // Populate subcats if data exists
+            if (data && data.category) {
+                updateSubcats(catSelect, data.sub ? data.sub.split(', ') : []);
+            }
+
+            // Re-index rows
+            updateRowNumbers();
+
+            // Update summary
+            updateSummary();
+        }
+
+        function updateSubcats(select, selectedValue = null) {
+            const row = select.closest('tr');
+            const container = row.querySelector('.sub-checks-container');
+            const otherCat = row.querySelector('.other-cat-input');
+            const category = select.value;
+
+            container.innerHTML = '';
+
+            // Toggle Other Category Input
+            if (category === 'others') {
+                otherCat.style.display = 'block';
+            } else {
+                otherCat.style.display = 'none';
+                otherCat.value = '';
+            }
+
+            if (category && categoryMap[category]) {
+                categoryMap[category].forEach(sub => {
+                    const div = document.createElement('div');
+                    div.className = 'form-check';
+
+                    const isChecked = selectedValue && selectedValue.includes(sub);
+
+                    div.innerHTML = `
+                        <input class="form-check-input sub-check" type="checkbox" value="${sub}" id="chk_${Math.random().toString(36).substr(2, 9)}" ${isChecked ? 'checked' : ''} onchange="handleSubCheck(this)">
+                        <label class="form-check-label" style="font-size: 12px;">${sub}</label>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        function handleSubCheck(cb) {
+            const row = cb.closest('tr');
+            const otherSubWrap = row.querySelector('.other-sub-wrap');
+
+            // Check if "Others" is selected in checkboxes
+            const isOthersChecked = Array.from(row.querySelectorAll('.sub-check:checked')).some(c => c.value === 'Others');
+            if (isOthersChecked) {
+                otherSubWrap.style.display = 'block';
+            } else {
+                otherSubWrap.style.display = 'none';
+                row.querySelector('.other-sub-input').value = '';
+            }
+
+            calculateRow(cb);
+        }
+
+        function calculateRow(input) {
+            const row = input.closest('tr');
+
+            // Lock Unit Setting
+            const radios = document.querySelectorAll('input[name="projectUnit"]');
+            radios.forEach(r => r.disabled = true);
+
+            // Get Values using parser
+            const width = parseDimension(row.querySelector('.w-input').value);
+            const height = parseDimension(row.querySelector('.h-input').value);
+            const depth = parseDimension(row.querySelector('.d-input').value);
+            const unit = row.querySelector('.unit-select').value;
+            const rate = parseFloat(row.querySelector('.rate-input').value) || 0;
+
+            // Calculate Base Quantity
+            let calculatedQty = 0;
+            const dims = [width, height, depth];
+            const normalizedUnit = unit.toUpperCase().replace(/\./g, '').replace(/\s/g, '');
+
+            if (normalizedUnit.includes('SQFT') || normalizedUnit.includes('SQMTR')) {
+                // Condition 1: Multiply two highest values
+                const sorted = [...dims].sort((a, b) => b - a);
+                calculatedQty = (sorted[0] || 0) * (sorted[1] || 0);
+            } else if (normalizedUnit.includes('RFT') || normalizedUnit.includes('RMTR')) {
+                // Condition 2: Highest single value
+                calculatedQty = Math.max(...dims);
+            } else if (normalizedUnit.includes('CUFT') || normalizedUnit.includes('CUMTR') || normalizedUnit.includes('NO') || normalizedUnit.includes('NUM') || normalizedUnit.includes('JOB')) {
+                // Condition 3, 4, 5: Multiply all three
+                calculatedQty = width * height * depth;
+                // If all zeros but unit is NO, NUMBER or JOB, default to 1
+                if ((normalizedUnit.includes('NO') || normalizedUnit.includes('NUM') || normalizedUnit.includes('JOB')) && width === 0 && height === 0 && depth === 0) {
+                    calculatedQty = 1;
+                }
+            } else {
+                calculatedQty = 1;
+            }
+
+            const amount = calculatedQty * rate;
+            row.querySelector('.qty-input').value = calculatedQty.toFixed(2);
+            row.querySelector('.amount-input').value = amount.toFixed(2);
+
+            updateSummary();
+        }
+
+        function deleteRow(btn) {
+            if (confirm('Delete this row?')) {
+                const row = btn.closest('tr');
+                row.remove();
+                updateRowNumbers();
+                updateSummary();
+            }
+        }
+
+        function updateRowNumbers() {
+            const rows = itemsTbody.querySelectorAll('tr');
+            rows.forEach((row, index) => {
+                row.querySelector('.row-number').textContent = index + 1;
+            });
+        }
+
+        function updateSummary() {
+            let subtotal = 0;
+            const rows = itemsTbody.querySelectorAll('tr');
+
+            rows.forEach(row => {
+                const amt = parseFloat(row.querySelector('.amount-input').value) || 0;
+                subtotal += amt;
+            });
+
+            const discount = parseFloat(document.getElementById('discountInput').value) || 0;
+            const netSubtotal = Math.max(0, subtotal - discount);
+
+            const includeGST = document.getElementById('includeGST').checked;
+            const gst = includeGST ? (netSubtotal * 0.18) : 0;
+
+            const total = netSubtotal + gst;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('gst').textContent = gst.toFixed(2);
+            document.getElementById('totalAmount').textContent = total.toFixed(2);
+
+            if (rows.length > 0) {
+                summarySection.style.display = 'block';
+                actionSection.style.display = 'flex';
+
+                // Permanent lock for project unit after first entry logic
+                const radios = document.querySelectorAll('input[name="projectUnit"]');
+                radios.forEach(r => r.disabled = true);
+            } else {
+                if (subtotal === 0 && rows.length === 0) {
+                    summarySection.style.display = 'none';
+                    actionSection.style.display = 'none';
+                } else {
+                    summarySection.style.display = 'block';
+                    actionSection.style.display = 'flex';
+                }
+            }
+        }
+
+        window.addEventListener('load', loadTempData);
+
+        // Helper to collect items from table
+        function getItemsFromTable() {
+            const items = [];
+            const rows = itemsTbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                let cat = row.querySelector('.cat-select').value;
+                if (cat === 'others') {
+                    cat = row.querySelector('.other-cat-input').value || 'Others';
+                } else {
+                    cat = cat.charAt(0).toUpperCase() + cat.slice(1);
+                }
+
+                const subItems = Array.from(row.querySelectorAll('.sub-check:checked')).map(cb => {
+                    if (cb.value === 'Others') {
+                        return row.querySelector('.other-sub-input').value || 'Others';
+                    }
+                    return cb.value;
+                });
+
+                const sub = subItems.join(', ');
+                const extra = row.querySelector('.desc-input').value;
+
+                // Concatenated Description for Display
+                const displayDesc = `${cat}${sub ? ' - ' + sub : ''}${extra ? ' (' + extra + ')' : ''}`;
+
+                const item = {
+                    category: cat,
+                    sub: sub,
+                    description: extra,
+                    fullDescription: displayDesc,
+                    width: row.querySelector('.w-input').value,
+                    depth: row.querySelector('.d-input').value,
+                    height: row.querySelector('.h-input').value,
+                    qty: row.querySelector('.qty-input').value,
+                    unit: row.querySelector('.unit-select').value,
+                    unitRate: row.querySelector('.rate-input').value,
+                    amount: parseFloat(row.querySelector('.amount-input').value) || 0
+                };
+                items.push(item);
+            });
+            return items;
+        }
+
+        function addFamilyMember(data = null) {
+            const tbody = document.getElementById('familyBody');
+            const tr = document.createElement('tr');
+            tr.className = 'family-member-row';
+            tr.innerHTML = `
+                <td>
+                    <select class="form-select form-select-sm mem-type">
+                        <option value="Spouse" ${data && data.type === 'Spouse' ? 'selected' : ''}>Spouse</option>
+                        <option value="Child" ${data && data.type === 'Child' ? 'selected' : ''}>Child</option>
+                        <option value="Parents" ${data && data.type === 'Parents' ? 'selected' : ''}>Parents</option>
+                        <option value="Siblings" ${data && data.type === 'Siblings' ? 'selected' : ''}>Siblings</option>
+                        <option value="Others" ${data && data.type === 'Others' ? 'selected' : ''}>Others</option>
+                    </select>
+                </td>
+                <td><input type="text" class="form-control form-control-sm mem-name" value="${data ? data.name : ''}" required></td>
+                <td><input type="tel" class="form-control form-control-sm mem-contact" value="${data ? data.contact : ''}"></td>
+                <td><input type="email" class="form-control form-control-sm mem-email" value="${data ? data.email : ''}"></td>
+                <td><input type="date" class="form-control form-control-sm mem-birth" value="${data ? data.birthdate : ''}"></td>
+                <td class="text-center"><input class="form-check-input mem-design" type="checkbox" ${data && data.designApproval ? 'checked' : ''}></td>
+                <td class="text-center"><input class="form-check-input mem-finance" type="checkbox" ${data && data.financeApproval ? 'checked' : ''}></td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm text-danger p-0" onclick="this.closest('tr').remove()">
+                        <i class="fas fa-times-circle"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function getFamilyData() {
+            const members = [];
+            const rows = document.querySelectorAll('#familyBody tr');
+            rows.forEach(row => {
+                const name = row.querySelector('.mem-name').value;
+                if (name) {
+                    members.push({
+                        type: row.querySelector('.mem-type').value,
+                        name: name,
+                        contact: row.querySelector('.mem-contact').value,
+                        email: row.querySelector('.mem-email').value,
+                        birthdate: row.querySelector('.mem-birth').value,
+                        designApproval: row.querySelector('.mem-design').checked,
+                        financeApproval: row.querySelector('.mem-finance').checked
+                    });
+                }
+            });
+            return members;
+        }
+
+        function handleWorkTypeChange(select) {
+            const customInput = document.getElementById('customWorkType');
+            if (select.value === 'others') {
+                customInput.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customInput.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+
+        // Helper to collect customer data
+        function collectCustomerData() {
+            return {
+                name: document.getElementById('customerName').value,
+                phone: document.getElementById('customerPhone').value,
+                email: document.getElementById('customerEmail').value,
+                address: document.getElementById('address').value,
+                workType: document.getElementById('workType').value === 'others' ? document.getElementById('customWorkType').value : document.getElementById('workType').value,
+                carpetArea: document.getElementById('carpetArea').value,
+                areaUnit: document.getElementById('areaUnit').value,
+                budget: document.getElementById('budget').value,
+                timeline: document.getElementById('timeline').value,
+                familyMembers: getFamilyData()
+            };
+        }
+
+        // Save Customer & Quotation
+        function saveCustomer() {
+            const items = getItemsFromTable();
+            if (items.length === 0) {
+                alert('Please add at least one item to the quotation.');
+                return;
+            }
+
+            // Validate at least category is selected for used rows or filter out empty rows?
+            // Filter out empty rows (where category is blank)
+            const validItems = items.filter(it => it.category && it.amount >= 0);
+
+            if (validItems.length === 0) {
+                alert('Please add valid items (Select Category).');
+                return;
+            }
+
+            const customers = JSON.parse(localStorage.getItem('customers') || '[]');
+            const projectUnit = document.querySelector('input[name="projectUnit"]:checked').value;
+
+            const discount = parseFloat(document.getElementById('discountInput').value) || 0;
+            const includeGST = document.getElementById('includeGST').checked;
+
+            const finalCustomer = {
+                ...tempCustomer,
+                projectUnit: projectUnit,
+                items: validItems,
+                discount: discount,
+                includeGST: includeGST,
+                lastUpdated: new Date().toISOString()
+            };
+
+            if (currentCustomerId !== null && currentCustomerId !== 'null') {
+                customers[parseInt(currentCustomerId)] = finalCustomer;
+            } else {
+                customers.push(finalCustomer);
+            }
+
+            localStorage.setItem('customers', JSON.stringify(customers));
+            localStorage.removeItem('createItems');
+            localStorage.removeItem('currentCustomerId');
+            localStorage.removeItem('tempCustomerDetails');
+
+            alert('Quotation saved successfully!');
+            window.location.href = 'quotations.html';
+        }
+
+        // View Quotation
+        function viewQuotation() {
+            const quotationContent = document.getElementById('quotationContent');
+            const items = getItemsFromTable();
+            // Filter for view
+            const validItems = items.filter(it => it.category);
+
+            const subtotal = validItems.reduce((sum, item) => sum + (parseFloat(item.amount) || 0), 0);
+            const discount = parseFloat(document.getElementById('discountInput').value) || 0;
+            const includeGST = document.getElementById('includeGST').checked;
+            const netSubtotal = Math.max(0, subtotal - discount);
+            const gstAmount = includeGST ? (netSubtotal * 0.18) : 0;
+            const totalAmount = netSubtotal + gstAmount;
+
+            const customerName = tempCustomer.name || (tempCustomer.personalDetails ? tempCustomer.personalDetails.name : 'Customer');
+            const customerEmail = tempCustomer.email || (tempCustomer.personalDetails ? tempCustomer.personalDetails.email : 'Email: N/A');
+            const customerPhone = tempCustomer.phone || (tempCustomer.personalDetails ? tempCustomer.personalDetails.phone : 'Phone: N/A');
+
+            quotationContent.innerHTML = `
+                <div style="font-family: Arial; color: #333;">
+                    <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #667eea; padding-bottom: 20px;">
+                        <h2 style="color: #667eea; margin: 0;">QUOTATION</h2>
+                        <p style="color: #6c757d; margin: 5px 0;">Professional Invoice & Quotation</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px;">
+                        <div>
+                            <h5 style="color: #667eea; margin-bottom: 10px;">Bill To:</h5>
+                            <p style="margin: 5px 0;"><strong>${customerName}</strong></p>
+                            <p style="margin: 5px 0; color: #6c757d;">${customerEmail}</p>
+                            <p style="margin: 5px 0; color: #6c757d;">${customerPhone}</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <p style="margin: 5px 0;"><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                            <p style="margin: 5px 0;"><strong>Reference:</strong> QT-${Math.floor(Math.random() * 10000)}</p>
+                        </div>
+                    </div>
+
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                        <thead>
+                            <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                <th style="padding: 12px; text-align: center; border: 1px solid #dee2e6; width: 50px;">S.No</th>
+                                <th style="padding: 12px; text-align: left; border: 1px solid #dee2e6;">Description</th>
+                                <th style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">Width</th>
+                                <th style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">Height</th>
+                                <th style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">Depth</th>
+                                <th style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">Unit</th>
+                                <th style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">Qty</th>
+                                <th style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">Rate</th>
+                                <th style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${validItems.map((item, index) => `
+                                <tr>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">${index + 1}</td>
+                                    <td style="padding: 12px; border: 1px solid #dee2e6;">
+                                        ${item.fullDescription || (item.category + (item.sub ? ' - ' + item.sub : ''))}
+                                    </td>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">${item.width || '-'}</td>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">${item.height || '-'}</td>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">${item.depth || '-'}</td>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">${item.unit}</td>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #dee2e6;">${item.qty}</td>
+                                    <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">₹${Number(item.unitRate).toFixed(2)}</td>
+                                    <td style="padding: 12px; text-align: right; border: 1px solid #dee2e6;">₹${Number(item.amount).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div style="text-align: right; margin-bottom: 30px;">
+                        <div style="display: inline-block; min-width: 300px;">
+                            <div style="display: flex; justify-content: space-between; padding: 10px; border-top: 1px solid #dee2e6;">
+                                <span>Subtotal:</span>
+                                <span>₹${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 10px; color: #dc3545;">
+                                <span>Discount:</span>
+                                <span>- ₹${discount.toFixed(2)}</span>
+                            </div>
+                            ${includeGST ? `
+                            <div style="display: flex; justify-content: space-between; padding: 10px;">
+                                <span>GST (18%):</span>
+                                <span>₹${gstAmount.toFixed(2)}</span>
+                            </div>
+                            ` : ''}
+                            <div style="display: flex; justify-content: space-between; padding: 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 6px; font-size: 18px; margin-top: 10px;">
+                                <strong>TOTAL:</strong>
+                                <strong>₹${totalAmount.toFixed(2)}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-top: 20px; border-left: 4px solid #667eea;">
+                        <p style="color: #6c757d; margin: 0; font-size: 12px;">
+                            <strong>Terms & Conditions:</strong> This quotation is valid for 30 days. Please confirm your order by email.<br>
+                            Thank you for your business!
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            const quotationModal = new bootstrap.Modal(document.getElementById('quotationModal'));
+            quotationModal.show();
+        }
+
+        // PDF Generation (Simplified)
+        function downloadPDF() {
+            const element = document.getElementById('quotationContent');
+            // Ensure modal is open or content is visible for rendering
+            const opt = {
+                margin: 10,
+                filename: 'quotation.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Temporarily show content if not visible
+            viewQuotation(); // Populate content
+
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+
+</html>
