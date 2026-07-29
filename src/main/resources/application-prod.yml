@@ -1,0 +1,49 @@
+server:
+  port: ${PORT:8080}
+
+spring:
+  application:
+    name: NeoSowInfra
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5434/neosowinfra}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    open-in-view: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+# Centralized JWT configurations
+security:
+  jwt:
+    # Base64 encoded signing key (needs to be 256 bits or more). This represents: "averylongandsecuresecretkeyforneosowinfraspringbootjwtauthenticationandauthorizationsystem"
+    secret: YXZlcnlsb25nYW5kc2VjdXJlc2VjcmV0a2V5Zm9ybmVvc293aW5mcmFzcHJpbmdib290and0YXV0aGVudGljYXRpb25hbmRhdXRob3JpemF0aW9uc3lzdGVt
+    # Token validity times in milliseconds
+    token-validity-in-seconds: 259200 # 3 days
+    token-validity-in-seconds-for-remember-me: 604800 # 7 days (used for refresh token)
+
+logging:
+  level:
+    root: INFO
+    com.neosow.infra: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
