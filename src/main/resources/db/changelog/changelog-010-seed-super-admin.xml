@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="12" author="neosow">
+        <!-- Check if the superadmin user already exists, if not, insert it -->
+        <insert tableName="users">
+            <column name="id" value="2df7c251-2ef3-40bf-ab72-68b64e0ee0c3"/>
+            <column name="email" value="superadmin@neosowinfra.com"/>
+            <!-- password is SuperAdmin@123 -->
+            <column name="password_hash" value="$2a$10$8px9LyZZTNITrSVqZoRaZ.OP22TdaMT0xig6SosfRjNmGv.yY17i6"/>
+            <column name="enabled" valueBoolean="true"/>
+            <column name="created_at" valueDate="now()"/>
+            <column name="updated_at" valueDate="now()"/>
+            <column name="created_by" value="System"/>
+            <column name="status" value="ACTIVE"/>
+        </insert>
+
+        <!-- Assign ROLE_SUPER_ADMIN role -->
+        <insert tableName="user_roles">
+            <column name="user_id" value="2df7c251-2ef3-40bf-ab72-68b64e0ee0c3"/>
+            <column name="role_id" value="0686940a-5c1a-4648-8df0-639ba399580b"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

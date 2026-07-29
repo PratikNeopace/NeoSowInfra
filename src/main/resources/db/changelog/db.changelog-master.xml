@@ -13,4 +13,5 @@
     <include file="db/changelog/changelog-007-quotation-revisions.xml"/>
     <include file="db/changelog/changelog-008-quotation-status.xml"/>
     <include file="db/changelog/changelog-009-quotation-discount-percent.xml"/>
+    <include file="db/changelog/changelog-010-seed-super-admin.xml"/>
 </databaseChangeLog>
