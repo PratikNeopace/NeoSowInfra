@@ -9,6 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import com.neosow.infra.model.QuotationType;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,8 +26,11 @@ public interface BoqItemRepository extends JpaRepository<BoqItem, UUID> {
 
     Optional<BoqItem> findFirstBySubHeadingIgnoreCase(String subHeading);
 
-    @Query("SELECT new com.neosow.infra.dto.boq.ApprovedBoqItemDTO(b.mainHeading, b.subHeading, b.description, b.unit, b.rate, b.isNewValue) FROM BoqItem b WHERE b.status = com.neosow.infra.model.BoqItemStatus.APPROVED")
+    @Query("SELECT new com.neosow.infra.dto.boq.ApprovedBoqItemDTO(b.mainHeading, b.subHeading, b.description, b.unit, b.rate, b.isNewValue, b.quotationType) FROM BoqItem b WHERE b.status = com.neosow.infra.model.BoqItemStatus.APPROVED")
     List<ApprovedBoqItemDTO> findApprovedBoqItems();
+
+    @Query("SELECT new com.neosow.infra.dto.boq.ApprovedBoqItemDTO(b.mainHeading, b.subHeading, b.description, b.unit, b.rate, b.isNewValue, b.quotationType) FROM BoqItem b WHERE b.status = com.neosow.infra.model.BoqItemStatus.APPROVED AND b.quotationType = :quotationType")
+    List<ApprovedBoqItemDTO> findApprovedBoqItemsByQuotationType(@Param("quotationType") QuotationType quotationType);
 
     @Query("SELECT b FROM BoqItem b WHERE " +
            "(:search IS NULL OR :search = '' OR " +

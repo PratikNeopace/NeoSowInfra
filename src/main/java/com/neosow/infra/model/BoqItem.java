@@ -69,6 +69,10 @@ public class BoqItem {
     private UUID adminId;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "quotation_type", length = 50)
+    private QuotationType quotationType;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     @Builder.Default
     private BoqItemStatus status = BoqItemStatus.APPROVED;

@@ -176,7 +176,7 @@ public class BoqImportServiceTest {
         });
 
         // Act
-        ImportJobResponseDTO result = boqImportService.importBoq(file);
+        ImportJobResponseDTO result = boqImportService.importBoq(file, null);
 
         // Assert
         assertNotNull(result);
@@ -191,6 +191,9 @@ public class BoqImportServiceTest {
     @Test
     void testImportRealExcelFile() throws IOException {
         java.io.File fileObj = new java.io.File("/Users/pratikghodke/Desktop/NeoSowInfra/BOQ SPECIFICATIONS 25.02.2026.xlsx");
+        if (!fileObj.exists()) {
+            return;
+        }
         byte[] content = java.nio.file.Files.readAllBytes(fileObj.toPath());
         MockMultipartFile file = new MockMultipartFile(
                 "file", "BOQ SPECIFICATIONS 25.02.2026.xlsx",
@@ -217,7 +220,7 @@ public class BoqImportServiceTest {
                     .build();
         });
 
-        ImportJobResponseDTO result = boqImportService.importBoq(file);
+        ImportJobResponseDTO result = boqImportService.importBoq(file, null);
         System.out.println("Real Import Result - Status: " + result.getStatus() + 
                            ", Total: " + result.getTotalRows() + 
                            ", Success: " + result.getSuccessRows() + 
@@ -234,7 +237,7 @@ public class BoqImportServiceTest {
                 updatedContent
         );
 
-        ImportJobResponseDTO updatedResult = boqImportService.importBoq(updatedFile);
+        ImportJobResponseDTO updatedResult = boqImportService.importBoq(updatedFile, null);
         System.out.println("Updated File Import Result - Status: " + updatedResult.getStatus() + 
                            ", Total: " + updatedResult.getTotalRows() + 
                            ", Success: " + updatedResult.getSuccessRows() + 
@@ -332,7 +335,7 @@ public class BoqImportServiceTest {
                     .build();
         });
 
-        ImportJobResponseDTO result = boqImportService.importBoq(file);
+        ImportJobResponseDTO result = boqImportService.importBoq(file, null);
 
         assertNotNull(result);
         assertEquals("COMPLETED", result.getStatus());
@@ -427,7 +430,7 @@ public class BoqImportServiceTest {
                     .build();
         });
 
-        ImportJobResponseDTO result = boqImportService.importBoq(file);
+        ImportJobResponseDTO result = boqImportService.importBoq(file, null);
 
         assertNotNull(result);
         assertEquals("COMPLETED", result.getStatus());
@@ -556,7 +559,7 @@ public class BoqImportServiceTest {
         });
 
         // Act
-        ImportJobResponseDTO result = boqImportService.importBoq(file);
+        ImportJobResponseDTO result = boqImportService.importBoq(file, null);
 
         // Assert
         assertNotNull(result);
@@ -675,6 +678,74 @@ public class BoqImportServiceTest {
         BoqItem saved = captor.getValue();
         assertEquals(com.neosow.infra.model.BoqItemStatus.PENDING_APPROVAL, saved.getStatus());
         assertEquals("ROLE_ADMIN", saved.getUploadedRole());
+    }
+
+    @Test
+    void testImportBoq_WithQuotationType() throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("PARTITION");
+        Row mhRow = sheet.createRow(1);
+        mhRow.createCell(0).setCellValue("MAIN HEADING");
+        mhRow.createCell(1).setCellValue("PREMIUM PARTITION WORK");
+
+        Row hRow = sheet.createRow(2);
+        hRow.createCell(0).setCellValue("S.NO.");
+        hRow.createCell(1).setCellValue("SUB-HEADING");
+        hRow.createCell(2).setCellValue("WIDTH");
+        hRow.createCell(3).setCellValue("HEIGHT");
+        hRow.createCell(6).setCellValue("UNIT");
+        hRow.createCell(7).setCellValue("NO. OF UNITS");
+        hRow.createCell(9).setCellValue("RATE");
+
+        Row r1 = sheet.createRow(4);
+        r1.createCell(0).setCellValue("1");
+        r1.createCell(1).setCellValue("LUXURY GLASS PARTITION");
+
+        Row r2 = sheet.createRow(5);
+        r2.createCell(1).setCellValue("Double glazed partition with acoustical seal");
+        r2.createCell(2).setCellValue(10.0);
+        r2.createCell(3).setCellValue(10.0);
+        r2.createCell(6).setCellValue("SQ.FT.");
+        r2.createCell(7).setCellValue(10.0);
+        r2.createCell(9).setCellValue(500.0);
+
+        Row grandTotalRow = sheet.createRow(6);
+        grandTotalRow.createCell(0).setCellValue("GRAND TOTAL");
+
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        workbook.write(bos);
+        byte[] bytes = bos.toByteArray();
+        workbook.close();
+
+        MockMultipartFile file = new MockMultipartFile("file", "boq_premium.xlsx",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", bytes);
+
+        Mockito.when(importJobRepository.save(any(ImportJob.class))).thenAnswer(inv -> {
+            ImportJob j = inv.getArgument(0);
+            if (j.getId() == null) {
+                j.setId(UUID.randomUUID());
+            }
+            return j;
+        });
+
+        Mockito.when(boqMapper.toDto(any(ImportJob.class))).thenAnswer(inv -> {
+            ImportJob j = inv.getArgument(0);
+            return ImportJobResponseDTO.builder()
+                    .id(j.getId())
+                    .status(j.getStatus().toString())
+                    .quotationType(j.getQuotationType())
+                    .build();
+        });
+
+        ImportJobResponseDTO result = boqImportService.importBoq(file, com.neosow.infra.model.QuotationType.PREMIUM_RANGE_QUOTE);
+
+        assertNotNull(result);
+        assertEquals(com.neosow.infra.model.QuotationType.PREMIUM_RANGE_QUOTE, result.getQuotationType());
+
+        org.mockito.ArgumentCaptor<BoqItem> captor = org.mockito.ArgumentCaptor.forClass(BoqItem.class);
+        Mockito.verify(boqItemRepository).save(captor.capture());
+        BoqItem saved = captor.getValue();
+        assertEquals(com.neosow.infra.model.QuotationType.PREMIUM_RANGE_QUOTE, saved.getQuotationType());
     }
 }
 

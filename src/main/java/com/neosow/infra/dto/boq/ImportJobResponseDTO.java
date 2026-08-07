@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.neosow.infra.model.QuotationType;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ public class ImportJobResponseDTO {
     private String role;
     private String fileName;
     private String status;
+    private QuotationType quotationType;
     private int totalRows;
     private int successRows;
     private int failedRows;

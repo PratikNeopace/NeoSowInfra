@@ -6,12 +6,14 @@ import com.neosow.infra.dto.boq.ImportJobResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.neosow.infra.model.QuotationType;
+
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.UUID;
 
 public interface BoqImportService {
-    ImportJobResponseDTO importBoq(MultipartFile file);
+    ImportJobResponseDTO importBoq(MultipartFile file, QuotationType quotationType);
     Page<ImportJobResponseDTO> getImportJobs(int page, int size);
     ByteArrayInputStream generateTemplate();
     ByteArrayInputStream generateSummary(UUID jobId);
@@ -19,7 +21,7 @@ public interface BoqImportService {
     Page<BoqItemDTO> getPendingBoqItems(int page, int size);
     BoqItemDTO approveBoqItem(UUID id);
     BoqItemDTO rejectBoqItem(UUID id);
-    List<ApprovedBoqItemDTO> getApprovedBoqItems();
+    List<ApprovedBoqItemDTO> getApprovedBoqItems(QuotationType quotationType);
     BoqItemDTO createManualBoqItem(BoqItemDTO dto);
 
     Page<BoqItemDTO> getAllBoqItems(int page, int size, String search);

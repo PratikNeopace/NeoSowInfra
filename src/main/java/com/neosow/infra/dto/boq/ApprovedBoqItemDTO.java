@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.neosow.infra.model.QuotationType;
+
 import java.math.BigDecimal;
 
 @Data
@@ -18,4 +20,5 @@ public class ApprovedBoqItemDTO {
     private String unit;
     private BigDecimal defaultRate;
     private boolean isNew;
+    private QuotationType quotationType;
 }

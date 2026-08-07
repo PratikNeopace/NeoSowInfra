@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import com.neosow.infra.model.QuotationType;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,6 +18,7 @@ import java.util.UUID;
 public class BoqItemDTO {
     private UUID id;
     private UUID jobId;
+    private QuotationType quotationType;
     private String mainHeading;
     private String subHeading;
     private String description;

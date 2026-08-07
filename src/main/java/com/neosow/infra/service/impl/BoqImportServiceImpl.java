@@ -7,6 +7,7 @@ import com.neosow.infra.exception.ResourceNotFoundException;
 import com.neosow.infra.mapper.BoqMapper;
 import com.neosow.infra.model.BoqItem;
 import com.neosow.infra.model.BoqItemStatus;
+import com.neosow.infra.model.QuotationType;
 import com.neosow.infra.dto.boq.BoqItemDTO;
 import com.neosow.infra.dto.boq.ApprovedBoqItemDTO;
 import com.neosow.infra.model.ImportError;
@@ -62,7 +63,7 @@ public class BoqImportServiceImpl implements BoqImportService {
 
     @Override
     @Transactional
-    public ImportJobResponseDTO importBoq(MultipartFile file) {
+    public ImportJobResponseDTO importBoq(MultipartFile file, QuotationType quotationType) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !auth.isAuthenticated()) {
             throw new AccessDeniedException("Not authenticated");
@@ -89,6 +90,7 @@ public class BoqImportServiceImpl implements BoqImportService {
                 .role(userRole)
                 .fileName(file.getOriginalFilename())
                 .status(ImportJobStatus.PROCESSING)
+                .quotationType(quotationType)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -515,6 +517,9 @@ public class BoqImportServiceImpl implements BoqImportService {
                             item.setApprovedBy(approvedByUser);
                             item.setApprovedAt(approvedAtTime);
                             item.setNewValue(false);
+                            if (quotationType != null) {
+                                item.setQuotationType(quotationType);
+                            }
                         } else {
                             item = BoqItem.builder()
                                     .jobId(job.getId())
@@ -538,6 +543,7 @@ public class BoqImportServiceImpl implements BoqImportService {
                                     .approvedBy(approvedByUser)
                                     .approvedAt(approvedAtTime)
                                     .isNewValue(true)
+                                    .quotationType(quotationType)
                                     .build();
                         }
 
@@ -1129,6 +1135,9 @@ public class BoqImportServiceImpl implements BoqImportService {
             item.setUploadedRole(userRole);
             item.setApprovedBy(approvedByUser);
             item.setApprovedAt(approvedAtTime);
+            if (dto.getQuotationType() != null) {
+                item.setQuotationType(dto.getQuotationType());
+            }
         } else {
             item = BoqItem.builder()
                     .mainHeading(truncatedMain)
@@ -1148,6 +1157,7 @@ public class BoqImportServiceImpl implements BoqImportService {
                     .approvedBy(approvedByUser)
                     .approvedAt(approvedAtTime)
                     .isNewValue(true)
+                    .quotationType(dto.getQuotationType())
                     .build();
         }
 
@@ -1167,7 +1177,10 @@ public class BoqImportServiceImpl implements BoqImportService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ApprovedBoqItemDTO> getApprovedBoqItems() {
+    public List<ApprovedBoqItemDTO> getApprovedBoqItems(QuotationType quotationType) {
+        if (quotationType != null) {
+            return boqItemRepository.findApprovedBoqItemsByQuotationType(quotationType);
+        }
         return boqItemRepository.findApprovedBoqItems();
     }
 
@@ -1215,6 +1228,10 @@ public class BoqImportServiceImpl implements BoqImportService {
         BigDecimal rate = dto.getRate() != null ? dto.getRate() : BigDecimal.ZERO;
         BigDecimal totalQty = item.getTotalQty() != null ? item.getTotalQty() : BigDecimal.ONE;
         item.setAmount(rate.multiply(totalQty));
+
+        if (dto.getQuotationType() != null) {
+            item.setQuotationType(dto.getQuotationType());
+        }
 
         if (dto.getStatus() != null) {
             try {

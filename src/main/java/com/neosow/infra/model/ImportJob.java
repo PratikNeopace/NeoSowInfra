@@ -35,6 +35,10 @@ public class ImportJob {
     @Column(nullable = false, length = 50)
     private ImportJobStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "quotation_type", length = 50)
+    private QuotationType quotationType;
+
     @Column(name = "total_rows")
     @Builder.Default
     private int totalRows = 0;

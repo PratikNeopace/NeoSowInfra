@@ -16,7 +16,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.neosow.infra.model.QuotationType;
+
 import java.io.ByteArrayInputStream;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,9 +32,11 @@ public class BoqController {
 
     @PostMapping("/import")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
-    public ResponseEntity<ImportJobResponseDTO> importBoq(@RequestParam("file") MultipartFile file) {
-        log.info("REST request to import BOQ spreadsheet: {}", file.getOriginalFilename());
-        ImportJobResponseDTO result = boqImportService.importBoq(file);
+    public ResponseEntity<ImportJobResponseDTO> importBoq(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "quotationType", required = false) QuotationType quotationType) {
+        log.info("REST request to import BOQ spreadsheet: {} with quotationType: {}", file.getOriginalFilename(), quotationType);
+        ImportJobResponseDTO result = boqImportService.importBoq(file, quotationType);
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 
@@ -104,9 +109,10 @@ public class BoqController {
     }
 
     @GetMapping("/approved")
-    public ResponseEntity<java.util.List<ApprovedBoqItemDTO>> getApprovedBoqItems() {
-        log.info("REST request to retrieve all approved BOQ items for dropdown listing");
-        java.util.List<ApprovedBoqItemDTO> result = boqImportService.getApprovedBoqItems();
+    public ResponseEntity<List<ApprovedBoqItemDTO>> getApprovedBoqItems(
+            @RequestParam(required = false) QuotationType quotationType) {
+        log.info("REST request to retrieve approved BOQ items for dropdown listing. Filter by quotationType: {}", quotationType);
+        List<ApprovedBoqItemDTO> result = boqImportService.getApprovedBoqItems(quotationType);
         return ResponseEntity.ok(result);
     }
 
