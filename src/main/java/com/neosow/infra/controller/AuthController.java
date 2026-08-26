@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +39,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JWTTokenProvider tokenProvider;
 
-    @PostMapping("/login")
+    @PostMapping({"/login", "/signin"})
     public ResponseEntity<JwtResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         log.info("Authentication request received for user: {}", loginRequest.getEmail());
 
@@ -116,5 +117,62 @@ public class AuthController {
             throw new BadRequestException("Invalid or expired refresh token");
         }
     }
-}
 
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        log.info("Forgot password requested for email: {}", request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("User with this email does not exist."));
+
+        // Generate 6-digit code
+        String code = String.format("%06d", (int) (Math.random() * 1000000));
+        user.setVerificationCode(code);
+        user.setVerificationCodeExpiresAt(LocalDateTime.now().plusMinutes(10));
+        userRepository.save(user);
+
+        // Log the verification code for testing/development
+        log.info("FORGOT_PASSWORD_CODE for user {}: {}", user.getEmail(), code);
+
+        return ResponseEntity.ok("Verification code has been sent to your email.");
+    }
+
+    @PostMapping("/verify-code")
+    public ResponseEntity<String> verifyCode(@Valid @RequestBody VerifyCodeRequest request) {
+        log.info("Verification code check requested for email: {}", request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("User not found."));
+
+        if (user.getVerificationCode() == null || !user.getVerificationCode().equals(request.getCode())) {
+            throw new BadRequestException("Invalid verification code.");
+        }
+
+        if (user.getVerificationCodeExpiresAt() == null || user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Verification code has expired.");
+        }
+
+        return ResponseEntity.ok("Verification code verified successfully!");
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        log.info("Reset password requested for email: {}", request.getEmail());
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new BadRequestException("User not found."));
+
+        if (user.getVerificationCode() == null || !user.getVerificationCode().equals(request.getCode())) {
+            throw new BadRequestException("Invalid verification code.");
+        }
+
+        if (user.getVerificationCodeExpiresAt() == null || user.getVerificationCodeExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("Verification code has expired.");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        user.setVerificationCode(null);
+        user.setVerificationCodeExpiresAt(null);
+        userRepository.save(user);
+
+        log.info("Password successfully reset for user: {}", user.getEmail());
+        return ResponseEntity.ok("Password has been reset successfully.");
+    }
+}
