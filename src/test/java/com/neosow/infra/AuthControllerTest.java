@@ -43,10 +43,20 @@ public class AuthControllerTest {
     @InjectMocks
     private AuthController authController;
 
+    @org.junit.jupiter.api.BeforeEach
+    void setUp() {
+        org.springframework.test.util.ReflectionTestUtils.setField(authController, "smsApiUrl", "https://platform.way2smart.in/index.php/sms/urlsms");
+        org.springframework.test.util.ReflectionTestUtils.setField(authController, "smsApiKey", "1bfe52-6fc3a4-51fd27-26016f-75bb39");
+        org.springframework.test.util.ReflectionTestUtils.setField(authController, "smsSender", "NEOPCE");
+        org.springframework.test.util.ReflectionTestUtils.setField(authController, "smsDltEntityId", "1701177338694666324");
+        org.springframework.test.util.ReflectionTestUtils.setField(authController, "smsDltTempId", "1777178540575813214");
+        org.springframework.test.util.ReflectionTestUtils.setField(authController, "smsAppSignature", "Q2TwnGW50lc");
+    }
+
     @Test
     void testForgotPassword_Success() {
         ForgotPasswordRequest request = new ForgotPasswordRequest("test@email.com");
-        User user = User.builder().email("test@email.com").build();
+        User user = User.builder().email("test@email.com").phone("9762878326").build();
 
         when(userRepository.findByEmail("test@email.com")).thenReturn(Optional.of(user));
 

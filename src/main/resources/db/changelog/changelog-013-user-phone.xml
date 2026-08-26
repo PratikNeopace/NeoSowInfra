@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="15" author="neosow">
+        <addColumn tableName="users">
+            <column name="phone" type="VARCHAR(20)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="16" author="neosow">
+        <update tableName="users">
+            <column name="phone" value="9762878326"/>
+            <where>email = 'superadmin@neosowinfra.com'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>

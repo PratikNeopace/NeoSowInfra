@@ -60,6 +60,9 @@ public class User {
     @Column(name = "verification_code_expires_at")
     private LocalDateTime verificationCodeExpiresAt;
 
+    @Column(length = 20)
+    private String phone;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

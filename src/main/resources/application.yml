@@ -47,3 +47,19 @@ logging:
     org.springframework.security: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.orm.jdbc.bind: TRACE
+
+sms:
+  way2smart:
+    api-url: ${SMS_WAY2SMART_API_URL:https://platform.way2smart.in/index.php/sms/urlsms}
+    api-key: ${SMS_WAY2SMART_API_KEY:1bfe52-6fc3a4-51fd27-26016f-75bb39}
+    sender: ${SMS_WAY2SMART_SENDER:NEOPCE}
+    dlt-entity-id: ${SMS_WAY2SMART_DLT_ENTITY_ID:1701177338694666324}
+    dlt-temp-id: ${SMS_WAY2SMART_DLT_TEMP_ID:1777178540575813214}
+    app-signature: ${SMS_WAY2SMART_APP_SIGNATURE:Q2TwnGW50lc}
+
+whatsapp:
+  way2smart:
+    waba-id: ${WHATSAPP_WAY2SMART_WABA_ID:903727565480452}
+    api-key: ${WHATSAPP_WAY2SMART_API_KEY:6babddac-0744-11f1-abfb-02c8a5e042bd}
+    phone-number-id: ${WHATSAPP_WAY2SMART_PHONE_NUMBER_ID:916791951527409}
+    api-url: ${WHATSAPP_WAY2SMART_API_URL:https://console-api.way2smart.in/v3}

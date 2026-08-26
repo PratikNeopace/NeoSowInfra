@@ -43,6 +43,15 @@ public class QuotationServiceImpl implements QuotationService {
     private final QuotationMapper quotationMapper;
     private final UserRepository userRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${whatsapp.way2smart.api-key}")
+    private String whatsappApiKey;
+
+    @org.springframework.beans.factory.annotation.Value("${whatsapp.way2smart.phone-number-id}")
+    private String whatsappPhoneNumberId;
+
+    @org.springframework.beans.factory.annotation.Value("${whatsapp.way2smart.api-url}")
+    private String whatsappApiUrl;
+
     @Override
     @Transactional
     public QuotationDTO createQuotation(QuotationDTO quotationDto) {
@@ -368,6 +377,74 @@ public class QuotationServiceImpl implements QuotationService {
             return product;
         } else {
             return 1.0;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void sendQuotationOnWhatsApp(UUID id) {
+        log.info("Preparing to send Quotation ID {} on WhatsApp", id);
+        
+        Quotation quotation = quotationRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Quotation not found with ID: " + id));
+        Customer customer = quotation.getCustomer();
+
+        if (customer.getPhone() == null || customer.getPhone().isBlank()) {
+            throw new BadRequestException("Customer does not have a registered phone number.");
+        }
+
+        // Normalize mobile
+        String cleanMobile = customer.getPhone().replaceAll("\\D", "");
+        if (cleanMobile.length() == 10) {
+            cleanMobile = "91" + cleanMobile;
+        }
+
+        // Prepare message body
+        BigDecimal grandTotal = quotation.getTotalAmount() != null ? quotation.getTotalAmount() : BigDecimal.ZERO;
+        String messageBody = String.format(
+                "Dear %s, your estimation sheet / quotation from NeoSow Infra has been generated.\n" +
+                "Quotation ID: %s\n" +
+                "Grand Total: Rs. %s\n" +
+                "You can view and export the details here: https://www.neosowinfra.com/quotations/%s\n\n" +
+                "Thank you,\n" +
+                "NeoSow Team",
+                customer.getName(),
+                quotation.getId(),
+                grandTotal.setScale(2, RoundingMode.HALF_UP).toString(),
+                quotation.getId()
+        );
+
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            
+            // Build target URL
+            String fullUrl = String.format("%s/%s/messages", whatsappApiUrl, whatsappPhoneNumberId);
+
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+            headers.set("apikey", whatsappApiKey);
+
+            java.util.Map<String, Object> payload = java.util.Map.of(
+                    "messaging_product", "whatsapp",
+                    "to", cleanMobile,
+                    "type", "text",
+                    "text", java.util.Map.of("body", messageBody)
+            );
+
+            org.springframework.http.HttpEntity<java.util.Map<String, Object>> request = 
+                    new org.springframework.http.HttpEntity<>(payload, headers);
+
+            log.info("Sending WhatsApp request to {} with payload to number {}", fullUrl, cleanMobile);
+            org.springframework.http.ResponseEntity<String> response = 
+                    restTemplate.postForEntity(fullUrl, request, String.class);
+            log.info("WhatsApp send response status: {}, body: {}", response.getStatusCode(), response.getBody());
+
+        } catch (org.springframework.web.client.HttpClientErrorException ex) {
+            log.error("WhatsApp API HttpClientError: Status={}, Body={}", ex.getStatusCode(), ex.getResponseBodyAsString(), ex);
+            throw new BadRequestException("WhatsApp Gateway rejected the request: " + ex.getResponseBodyAsString());
+        } catch (Exception e) {
+            log.error("Failed to send WhatsApp message", e);
+            throw new BadRequestException("Failed to send WhatsApp message: " + e.getMessage());
         }
     }
 }
