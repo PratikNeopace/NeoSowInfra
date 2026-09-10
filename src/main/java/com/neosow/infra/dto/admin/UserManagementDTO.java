@@ -16,6 +16,7 @@ import java.util.UUID;
 public class UserManagementDTO {
     private UUID id;
     private String email;
+    private String phone;
     private boolean enabled;
     private List<String> roles;
     private LocalDateTime createdAt;

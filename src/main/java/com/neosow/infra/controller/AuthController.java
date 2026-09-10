@@ -94,6 +94,7 @@ public class AuthController {
         User user = User.builder()
                 .email(signUpRequest.getEmail())
                 .passwordHash(passwordEncoder.encode(signUpRequest.getPassword()))
+                .phone(signUpRequest.getPhone())
                 .enabled(true)
                 .build();
 

@@ -6,19 +6,19 @@ spring:
     name: NeoSowInfra
   
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5433/neosowinfra}
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:neosowinfra}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:root}
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: org.h2.Driver
 
   jpa:
-    database: postgresql
+    database: h2
     show-sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
     open-in-view: false
 

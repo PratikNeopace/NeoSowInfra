@@ -85,6 +85,7 @@ public class AdminUserServiceImpl implements AdminUserService {
         User user = User.builder()
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .phone(formatPhone(request.getPhone()))
                 .enabled(true)
                 .roles(roles)
                 .status(UserStatus.ACTIVE)
@@ -173,6 +174,59 @@ public class AdminUserServiceImpl implements AdminUserService {
         }
 
         return sorted;
+    }
+
+    @Override
+    @Transactional
+    public UserManagementDTO updateUser(UUID id, com.neosow.infra.dto.admin.UserUpdateRequest request) {
+        String currentEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User currentUser = userRepository.findByEmail(currentEmail)
+                .orElseThrow(() -> new ResourceNotFoundException("Logged-in user not found"));
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + id));
+
+        boolean isSuperAdmin = currentUser.getRoles().stream()
+                .anyMatch(r -> r.getName() == ERole.ROLE_SUPER_ADMIN);
+
+        if (!isSuperAdmin && !currentUser.getId().equals(user.getParentAdminId())) {
+            throw new AccessDeniedException("Not authorized to manage this user");
+        }
+
+        if (request.getEmail() != null && !request.getEmail().equals(user.getEmail())) {
+            if (userRepository.existsByEmail(request.getEmail())) {
+                throw new BadRequestException("Email already in use");
+            }
+            user.setEmail(request.getEmail());
+        }
+
+        if (request.getPhone() != null && !request.getPhone().equals(user.getPhone())) {
+            user.setPhone(formatPhone(request.getPhone()));
+        }
+
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+        }
+
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            Set<Role> roles = new java.util.HashSet<>();
+            for (String roleStr : request.getRoles()) {
+                ERole eRole = ERole.valueOf("ROLE_" + roleStr.toUpperCase());
+                Role role = roleRepository.findByName(eRole)
+                        .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + roleStr));
+                roles.add(role);
+            }
+            user.getRoles().clear();
+            user.getRoles().addAll(roles);
+        }
+
+        if (request.getEnabled() != null) {
+            user.setEnabled(request.getEnabled());
+        }
+
+        User updatedUser = userRepository.save(user);
+        log.info("User ID {} updated successfully", id);
+        return userMapper.toDto(updatedUser);
     }
 
     @Override
@@ -349,5 +403,16 @@ public class AdminUserServiceImpl implements AdminUserService {
         admin.setEnabled(userStatus == UserStatus.ACTIVE);
         userRepository.save(admin);
         log.info("Admin ID {} status changed to {}", adminId, userStatus);
+    }
+
+    private String formatPhone(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            return phone;
+        }
+        String trimmed = phone.trim();
+        if (trimmed.startsWith("+")) {
+            return trimmed;
+        }
+        return "+91" + trimmed;
     }
 }

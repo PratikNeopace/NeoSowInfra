@@ -45,6 +45,16 @@ public class AdminController {
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
 
+    @PutMapping("/users/{id}")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
+    public ResponseEntity<UserManagementDTO> updateUser(
+            @PathVariable UUID id, 
+            @Valid @RequestBody com.neosow.infra.dto.admin.UserUpdateRequest request) {
+        log.info("REST request to update user: {}", id);
+        UserManagementDTO user = adminUserService.updateUser(id, request);
+        return ResponseEntity.ok(user);
+    }
+
     @PutMapping("/users/{id}/toggle")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')")
     public ResponseEntity<Void> toggleUserStatus(

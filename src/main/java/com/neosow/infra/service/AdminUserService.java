@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public interface AdminUserService {
     UserManagementDTO createUser(UserCreationRequest request);
+    UserManagementDTO updateUser(UUID id, com.neosow.infra.dto.admin.UserUpdateRequest request);
     Page<UserManagementDTO> getUsers(int page, int size);
     void toggleUserStatus(UUID id, String securityCode);
     void deleteUser(UUID id);
