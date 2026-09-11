@@ -17,6 +17,7 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmail(String email);
+    Optional<User> findByPhone(String phone);
     boolean existsByEmail(String email);
 
     Page<User> findByParentAdminId(UUID parentAdminId, Pageable pageable);

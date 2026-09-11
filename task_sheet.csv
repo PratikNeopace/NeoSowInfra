@@ -1,0 +1,10 @@
+Date,Module,Task Description,Status,Effort (Hrs),Manager Notes / Impact
+"Aug 12, 2026",Backend,Initialized AuthController endpoints for password reset,Completed,4.0,Laid the foundation for secure credential recovery and user autonomy.
+"Aug 15, 2026",Frontend,"Built 3-step Forgot Password UI (Email, OTP, Reset)",Completed,5.5,Enhances user experience and drastically reduces manual password reset support requests.
+"Aug 20, 2026",DevOps,API environment configuration and local proxy setups,Completed,3.0,Ensured seamless local testing workflow without impacting the production database.
+"Aug 25, 2026",Database,PostgreSQL schema migrations and local auth resolution,Completed,2.5,Resolved SCRAM authentication constraints to stabilize local development environments.
+"Sep 01, 2026",Backend,Implemented GlobalExceptionHandler for Authentication,Completed,3.5,Improved API robustness; translates raw Java exceptions into user-friendly error messages.
+"Sep 03, 2026",Frontend,Integrated Phone Number validation in Admin Panel,Completed,2.0,Crucial for the SMS OTP feature; ensures data integrity during user creation.
+"Sep 03, 2026",Backend,Added automatic +91 country code formatting,Completed,1.5,Improves UX by handling regional prefixing automatically on the server side.
+"Sep 04, 2026",Frontend,Refactored Admin User Table display IDs,Completed,2.0,"Replaced raw database UUIDs with sequential, human-readable row numbers for better admin UX."
+"Sep 07, 2026",QA / Testing,End-to-end testing of user creation and auth flows,Completed,3.0,"Verified edge cases including missing phone numbers, invalid credentials, and API proxy routing."

@@ -139,9 +139,9 @@ public class AuthController {
 
     @PostMapping("/forgot-password")
     public ResponseEntity<String> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
-        log.info("Forgot password requested for email: {}", request.getEmail());
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new BadRequestException("User with this email does not exist."));
+        log.info("Forgot password requested for phone: {}", request.getPhone());
+        User user = userRepository.findByPhone(request.getPhone())
+                .orElseThrow(() -> new BadRequestException("User with this phone number does not exist."));
 
         if (user.getPhone() == null || user.getPhone().isBlank()) {
             throw new BadRequestException("No registered mobile number found for this account. Please contact your administrator.");
@@ -161,8 +161,8 @@ public class AuthController {
 
     @PostMapping("/verify-code")
     public ResponseEntity<String> verifyCode(@Valid @RequestBody VerifyCodeRequest request) {
-        log.info("Verification code check requested for email: {}", request.getEmail());
-        User user = userRepository.findByEmail(request.getEmail())
+        log.info("Verification code check requested for phone: {}", request.getPhone());
+        User user = userRepository.findByPhone(request.getPhone())
                 .orElseThrow(() -> new BadRequestException("User not found."));
 
         if (user.getVerificationCode() == null || !user.getVerificationCode().equals(request.getCode())) {
@@ -178,8 +178,8 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
-        log.info("Reset password requested for email: {}", request.getEmail());
-        User user = userRepository.findByEmail(request.getEmail())
+        log.info("Reset password requested for phone: {}", request.getPhone());
+        User user = userRepository.findByPhone(request.getPhone())
                 .orElseThrow(() -> new BadRequestException("User not found."));
 
         if (user.getVerificationCode() == null || !user.getVerificationCode().equals(request.getCode())) {
