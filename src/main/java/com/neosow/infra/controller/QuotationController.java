@@ -90,9 +90,9 @@ public class QuotationController {
     }
 
     @PostMapping("/{id}/whatsapp")
-    public ResponseEntity<Void> sendQuotationOnWhatsApp(@PathVariable java.util.UUID id) {
+    public ResponseEntity<Void> sendQuotationOnWhatsApp(@PathVariable java.util.UUID id, @RequestParam(required = false) String targetPhone) {
         log.info("REST request to send Quotation ID {} on WhatsApp", id);
-        quotationService.sendQuotationOnWhatsApp(id);
+        quotationService.sendQuotationOnWhatsApp(id, targetPhone);
         return ResponseEntity.ok().build();
     }
 }

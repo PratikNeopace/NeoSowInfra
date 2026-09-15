@@ -11,5 +11,5 @@ public interface QuotationService {
     Page<QuotationDTO> getQuotationsByCustomerId(UUID customerId, int page, int size);
     void deleteQuotation(UUID id);
     void updateQuotationStatus(UUID id, String status);
-    void sendQuotationOnWhatsApp(UUID id);
+    void sendQuotationOnWhatsApp(UUID id, String targetPhone);
 }

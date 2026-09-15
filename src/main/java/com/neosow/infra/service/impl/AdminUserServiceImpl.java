@@ -64,9 +64,13 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         Set<Role> roles = new HashSet<>();
         for (String roleName : request.getRoles()) {
+            String formattedRole = roleName.toUpperCase();
+            if (!formattedRole.startsWith("ROLE_")) {
+                formattedRole = "ROLE_" + formattedRole;
+            }
             ERole eRole;
             try {
-                eRole = ERole.valueOf(roleName);
+                eRole = ERole.valueOf(formattedRole);
             } catch (IllegalArgumentException e) {
                 throw new BadRequestException("Error: Invalid role name: " + roleName);
             }
@@ -211,9 +215,14 @@ public class AdminUserServiceImpl implements AdminUserService {
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             Set<Role> roles = new java.util.HashSet<>();
             for (String roleStr : request.getRoles()) {
-                ERole eRole = ERole.valueOf("ROLE_" + roleStr.toUpperCase());
+                String tempFormatted = roleStr.toUpperCase();
+                if (!tempFormatted.startsWith("ROLE_")) {
+                    tempFormatted = "ROLE_" + tempFormatted;
+                }
+                final String finalFormattedRole = tempFormatted;
+                ERole eRole = ERole.valueOf(finalFormattedRole);
                 Role role = roleRepository.findByName(eRole)
-                        .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + roleStr));
+                        .orElseThrow(() -> new ResourceNotFoundException("Role not found: " + finalFormattedRole));
                 roles.add(role);
             }
             user.getRoles().clear();

@@ -382,19 +382,21 @@ public class QuotationServiceImpl implements QuotationService {
 
     @Override
     @Transactional(readOnly = true)
-    public void sendQuotationOnWhatsApp(UUID id) {
+    public void sendQuotationOnWhatsApp(UUID id, String targetPhone) {
         log.info("Preparing to send Quotation ID {} on WhatsApp", id);
         
         Quotation quotation = quotationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Quotation not found with ID: " + id));
         Customer customer = quotation.getCustomer();
 
-        if (customer.getPhone() == null || customer.getPhone().isBlank()) {
-            throw new BadRequestException("Customer does not have a registered phone number.");
+        String phoneToSend = targetPhone != null && !targetPhone.isBlank() ? targetPhone : customer.getPhone();
+
+        if (phoneToSend == null || phoneToSend.isBlank()) {
+            throw new BadRequestException("No valid phone number provided or registered for the customer.");
         }
 
         // Normalize mobile
-        String cleanMobile = customer.getPhone().replaceAll("\\D", "");
+        String cleanMobile = phoneToSend.replaceAll("\\D", "");
         if (cleanMobile.length() == 10) {
             cleanMobile = "91" + cleanMobile;
         }
