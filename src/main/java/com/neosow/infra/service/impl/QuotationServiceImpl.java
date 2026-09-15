@@ -426,11 +426,18 @@ public class QuotationServiceImpl implements QuotationService {
             headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
             headers.set("apikey", whatsappApiKey);
 
+            String pdfUrl = String.format("https://api.neosowinfra.com/api/v1/quotations/%s/pdf", id);
+            
+            // Sending as a document (PDF) instead of text
             java.util.Map<String, Object> payload = java.util.Map.of(
                     "messaging_product", "whatsapp",
                     "to", cleanMobile,
-                    "type", "text",
-                    "text", java.util.Map.of("body", messageBody)
+                    "type", "document",
+                    "document", java.util.Map.of(
+                        "link", pdfUrl,
+                        "filename", "NeoSow_Quotation_" + id + ".pdf",
+                        "caption", messageBody
+                    )
             );
 
             org.springframework.http.HttpEntity<java.util.Map<String, Object>> request = 
