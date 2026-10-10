@@ -263,10 +263,10 @@ public class QuotationServiceTest {
         Mockito.when(quotationRepository.findById(quoteId)).thenReturn(Optional.of(quotation));
 
         try {
-            quotationService.sendQuotationOnWhatsApp(quoteId);
+            // Call the service
+            quotationService.sendQuotationOnWhatsApp(quoteId, null);
         } catch (Exception e) {
             // Allow connection failures during test execution
         }
     }
 }
-

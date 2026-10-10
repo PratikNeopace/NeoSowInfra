@@ -145,7 +145,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private void checkOwnership(Customer customer) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
+        if (auth == null || auth instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
             return;
         }
         boolean isSuperAdmin = auth.getAuthorities().stream()

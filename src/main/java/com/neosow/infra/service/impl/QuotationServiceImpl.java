@@ -228,7 +228,7 @@ public class QuotationServiceImpl implements QuotationService {
 
     private void checkQuotationOwnership(Quotation quotation) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null) {
+        if (auth == null || auth instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
             return;
         }
         boolean isSuperAdmin = auth.getAuthorities().stream()
@@ -426,17 +426,43 @@ public class QuotationServiceImpl implements QuotationService {
             headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
             headers.set("apikey", whatsappApiKey);
 
+            // Sending as an approved Meta WhatsApp Template with a Document Header
+            java.util.List<java.util.Map<String, String>> bodyParameters = java.util.List.of(
+                    java.util.Map.of("type", "text", "text", customer.getName() != null ? customer.getName() : "Customer"),
+                    java.util.Map.of("type", "text", "text", quotation.getId().toString()),
+                    java.util.Map.of("type", "text", "text", grandTotal.setScale(2, java.math.RoundingMode.HALF_UP).toString()),
+                    java.util.Map.of("type", "text", "text", quotation.getId().toString())
+            );
+
             String pdfUrl = String.format("https://api.neosowinfra.com/api/v1/quotations/%s/pdf", id);
             
-            // Sending as a document (PDF) instead of text
+            java.util.List<java.util.Map<String, Object>> components = java.util.List.of(
+                    java.util.Map.of(
+                            "type", "header",
+                            "parameters", java.util.List.of(
+                                    java.util.Map.of(
+                                            "type", "document",
+                                            "document", java.util.Map.of(
+                                                    "link", pdfUrl,
+                                                    "filename", "NeoSow_Quotation_" + id + ".pdf"
+                                            )
+                                    )
+                            )
+                    ),
+                    java.util.Map.of(
+                            "type", "body",
+                            "parameters", bodyParameters
+                    )
+            );
+
             java.util.Map<String, Object> payload = java.util.Map.of(
                     "messaging_product", "whatsapp",
                     "to", cleanMobile,
-                    "type", "document",
-                    "document", java.util.Map.of(
-                        "link", pdfUrl,
-                        "filename", "NeoSow_Quotation_" + id + ".pdf",
-                        "caption", messageBody
+                    "type", "template",
+                    "template", java.util.Map.of(
+                            "name", "neosow_quote",
+                            "language", java.util.Map.of("code", "en"),
+                            "components", components
                     )
             );
 
