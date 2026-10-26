@@ -1,0 +1,33 @@
+[Unit]
+Description=NeoSowInfra Backend Service
+After=syslog.target network.target postgresql.service
+
+[Service]
+Type=simple
+# User and Group under which the service runs (e.g. root, ubuntu, or a dedicated neosow user)
+User=root
+
+# Working directory where the JAR and application configs reside
+WorkingDirectory=/opt/neosowinfra
+
+# Command to execute the Spring Boot application
+# Ensure Java 17+ path is correct (check with 'which java')
+ExecStart=/usr/bin/java -Xms512m -Xmx1024m -Dspring.profiles.active=prod -jar /opt/neosowinfra/infra-0.0.1-SNAPSHOT.jar
+
+# Restart configuration
+Restart=always
+RestartSec=10
+SuccessExitStatus=143
+
+# Logging configuration (logs sent to systemd journal, viewable via journalctl)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=neosowinfra
+
+# Optional environment variables (uncomment or edit if needed)
+# Environment="PORT=8080"
+# Environment="SPRING_PROFILES_ACTIVE=prod"
+# EnvironmentFile=-/etc/default/neosowinfra
+
+[Install]
+WantedBy=multi-user.target
