@@ -8,11 +8,11 @@ Type=simple
 User=root
 
 # Working directory where the JAR and application configs reside
-WorkingDirectory=/opt/neosowinfra
+WorkingDirectory=/home/neosowinfra/backend
 
 # Command to execute the Spring Boot application
 # Ensure Java 17+ path is correct (check with 'which java')
-ExecStart=/usr/bin/java -Xms512m -Xmx1024m -Dspring.profiles.active=prod -jar /opt/neosowinfra/infra-0.0.1-SNAPSHOT.jar
+ExecStart=/usr/bin/java -Xms512m -Xmx1024m -Dspring.profiles.active=prod -jar /home/neosowinfra/backend/infra-0.0.1-SNAPSHOT.jar
 
 # Restart configuration
 Restart=always
