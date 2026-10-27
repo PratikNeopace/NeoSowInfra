@@ -8,6 +8,7 @@ import com.neosow.infra.model.Customer;
 import com.neosow.infra.model.Quotation;
 import com.neosow.infra.model.QuotationItem;
 import com.neosow.infra.model.QuotationStatus;
+import com.neosow.infra.model.QuotationType;
 import com.neosow.infra.model.User;
 import com.neosow.infra.repository.CustomerRepository;
 import com.neosow.infra.repository.QuotationRepository;
@@ -71,6 +72,12 @@ public class QuotationServiceImpl implements QuotationService {
             }
         } else {
             quotation.setStatus(QuotationStatus.ENQUIRY);
+        }
+
+        if (quotationDto.getQuotationType() != null) {
+            quotation.setQuotationType(quotationDto.getQuotationType());
+        } else {
+            quotation.setQuotationType(QuotationType.BUDGET_QUOTE);
         }
 
         if (quotationDto.getParentQuotationId() != null) {

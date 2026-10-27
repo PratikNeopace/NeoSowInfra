@@ -1,5 +1,6 @@
 package com.neosow.infra.dto.quotation;
 
+import com.neosow.infra.model.QuotationType;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ public class QuotationDTO {
     private UUID id;
     private UUID parentQuotationId;
     private String status;
+    private QuotationType quotationType;
     @NotNull(message = "Customer ID is required")
     private UUID customerId;
     private String customerName; // Handy for UI presentation

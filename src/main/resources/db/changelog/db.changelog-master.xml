@@ -17,4 +17,5 @@
     <include file="db/changelog/changelog-011-boq-quotation-type.xml"/>
     <include file="db/changelog/changelog-012-user-verification.xml"/>
     <include file="db/changelog/changelog-013-user-phone.xml"/>
+    <include file="db/changelog/changelog-014-quotation-type.xml"/>
 </databaseChangeLog>

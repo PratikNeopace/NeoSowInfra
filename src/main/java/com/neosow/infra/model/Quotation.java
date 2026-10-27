@@ -63,6 +63,11 @@ public class Quotation {
     @Builder.Default
     private QuotationStatus status = QuotationStatus.ENQUIRY;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "quotation_type", length = 50)
+    @Builder.Default
+    private QuotationType quotationType = QuotationType.BUDGET_QUOTE;
+
     @OneToMany(mappedBy = "quotation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Builder.Default
     private List<QuotationItem> items = new ArrayList<>();
